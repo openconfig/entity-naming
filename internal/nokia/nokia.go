@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package nokia provides Nokia-specific platform information.
+// Package nokia provides a Nokia naming information.
 package nokia
 
 import (
@@ -23,7 +23,7 @@ import (
 
 var _ namer.Namer = (*Namer)(nil)
 
-// Namer is an Nokia implementation of the namer interface.
+// Namer is a Nokia implementation of the Namer interface.
 type Namer struct{}
 
 // LoopbackInterface is a Nokia implementation of namer.LoopbackInterface.
@@ -33,4 +33,22 @@ func (n *Namer) LoopbackInterface(index int) (string, error) {
 		return "", fmt.Errorf("Nokia loopback index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("lo%d", index), nil
+}
+
+// AggregatePort is a Nokia implementation of namer.AggregatePort.
+func (n *Namer) AggregatePort(index int) (string, error) {
+	const maxIndex = 127
+	if index > maxIndex {
+		return "", fmt.Errorf("Nokia aggregate index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("lag%d", index+1), nil
+}
+
+// AggregateInterface is a Nokia implementation of namer.AggregateInterface.
+func (n *Namer) AggregateInterface(index int) (string, error) {
+	name, err := n.AggregatePort(index)
+	if err != nil {
+		return "", err
+	}
+	return name + ".0", nil
 }

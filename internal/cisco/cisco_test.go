@@ -15,11 +15,13 @@
 package cisco
 
 import (
+	"strings"
 	"testing"
 )
 
+var cn = new(Namer)
+
 func TestLoopbackInterface(t *testing.T) {
-	var cn = new(Namer)
 	tests := []struct {
 		desc  string
 		index int
@@ -44,4 +46,72 @@ func TestLoopbackInterface(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestAggregatePort(t *testing.T) {
+	tests := []struct {
+		desc  string
+		index int
+		want  string
+	}{{
+		desc:  "min",
+		index: 0,
+		want:  "Bundle-Ether1",
+	}, {
+		desc:  "max",
+		index: 65534,
+		want:  "Bundle-Ether65535",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := cn.AggregatePort(test.index)
+			if err != nil {
+				t.Fatalf("AggregatePort(%v) got error: %v", test.index, err)
+			}
+			if got != test.want {
+				t.Errorf("AggregatePort(%d) got %q, want %q", test.index, got, test.want)
+			}
+		})
+	}
+
+	t.Run("over max", func(t *testing.T) {
+		_, err := cn.AggregatePort(65535)
+		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Fatalf("AggregatePort(65535) got error %v, want substring %q", err, wantErr)
+		}
+	})
+}
+
+func TestAggregateInterface(t *testing.T) {
+	tests := []struct {
+		desc  string
+		index int
+		want  string
+	}{{
+		desc:  "min",
+		index: 0,
+		want:  "Bundle-Ether1",
+	}, {
+		desc:  "max",
+		index: 65534,
+		want:  "Bundle-Ether65535",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := cn.AggregateInterface(test.index)
+			if err != nil {
+				t.Fatalf("AggregateInterface(%v) got error: %v", test.index, err)
+			}
+			if got != test.want {
+				t.Errorf("AggregateInterface(%d) got %q, want %q", test.index, got, test.want)
+			}
+		})
+	}
+
+	t.Run("over max", func(t *testing.T) {
+		_, err := cn.AggregateInterface(65535)
+		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Fatalf("AggregateInterface(65535) got error %v, want substring %q", err, wantErr)
+		}
+	})
 }

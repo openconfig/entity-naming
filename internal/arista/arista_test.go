@@ -19,8 +19,9 @@ import (
 	"testing"
 )
 
+var an = new(Namer)
+
 func TestLoopbackInterface(t *testing.T) {
-	var an = new(Namer)
 	tests := []struct {
 		desc  string
 		index int
@@ -50,6 +51,74 @@ func TestLoopbackInterface(t *testing.T) {
 		_, err := an.LoopbackInterface(1001)
 		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
 			t.Fatalf("LoopbackInterface(1001) got error %v, want substring %q", err, wantErr)
+		}
+	})
+}
+
+func TestAggregatePort(t *testing.T) {
+	tests := []struct {
+		desc  string
+		index int
+		want  string
+	}{{
+		desc:  "min",
+		index: 0,
+		want:  "Port-Channel1",
+	}, {
+		desc:  "max",
+		index: 999998,
+		want:  "Port-Channel999999",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := an.AggregatePort(test.index)
+			if err != nil {
+				t.Fatalf("AggregatePort(%v) got error: %v", test.index, err)
+			}
+			if got != test.want {
+				t.Errorf("AggregatePort(%d) got %q, want %q", test.index, got, test.want)
+			}
+		})
+	}
+
+	t.Run("over max", func(t *testing.T) {
+		_, err := an.AggregatePort(999999)
+		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Fatalf("AggregatePort(999999) got error %v, want substring %q", err, wantErr)
+		}
+	})
+}
+
+func TestAggregateInterface(t *testing.T) {
+	tests := []struct {
+		desc  string
+		index int
+		want  string
+	}{{
+		desc:  "min",
+		index: 0,
+		want:  "Port-Channel1",
+	}, {
+		desc:  "max",
+		index: 999998,
+		want:  "Port-Channel999999",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := an.AggregateInterface(test.index)
+			if err != nil {
+				t.Fatalf("AggregateInterface(%v) got error: %v", test.index, err)
+			}
+			if got != test.want {
+				t.Errorf("AggregateInterface(%d) got %q, want %q", test.index, got, test.want)
+			}
+		})
+	}
+
+	t.Run("over max", func(t *testing.T) {
+		_, err := an.AggregateInterface(999999)
+		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Fatalf("AggregateInterface(999999) got error %v, want substring %q", err, wantErr)
 		}
 	})
 }

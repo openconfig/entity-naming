@@ -18,12 +18,15 @@ import (
 	"errors"
 	"strings"
 	"testing"
+
+	"github.com/openconfig/entity-naming/internal/namer"
 )
 
-func TestLoopbackInterface(t *testing.T) {
-	const fakeVendor = Vendor("fake")
-	var devParams = &DeviceParams{Vendor: fakeVendor}
+const fakeVendor = Vendor("fake")
 
+var devParams = &DeviceParams{Vendor: fakeVendor}
+
+func TestLoopbackInterface(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		const want = "fakeLoopback0"
 		vendorToNamer[fakeVendor] = &fakeNamer{LoopbackInterfaceFn: func(int) (string, error) {
@@ -60,10 +63,96 @@ func TestLoopbackInterface(t *testing.T) {
 	})
 }
 
+func TestAggregatePort(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		const want = "fakeAggregatePort0"
+		vendorToNamer[fakeVendor] = &fakeNamer{AggregatePortFn: func(int) (string, error) {
+			return want, nil
+		}}
+		got, err := AggregatePort(devParams, 0)
+		if err != nil {
+			t.Errorf("AggregatePort(%v,0) got error %v", devParams, err)
+		}
+		if got != want {
+			t.Errorf("AggregatePort(%v,0) got %q, want %q", devParams, got, want)
+		}
+	})
+
+	t.Run("negative index", func(t *testing.T) {
+		vendorToNamer[fakeVendor] = &fakeNamer{AggregatePortFn: func(int) (string, error) {
+			return "", nil
+		}}
+		_, err := AggregatePort(devParams, -1)
+		if wantErr := "negative"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("AggregatePort(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		const wantErr = "fakeAggregatePortErr"
+		vendorToNamer[fakeVendor] = &fakeNamer{AggregatePortFn: func(int) (string, error) {
+			return "", errors.New(wantErr)
+		}}
+		_, err := AggregatePort(devParams, 0)
+		if err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("AggregatePort(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+}
+
+func TestAggregateInterface(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		const want = "fakeAggregateIntf0"
+		vendorToNamer[fakeVendor] = &fakeNamer{AggregateInterfaceFn: func(int) (string, error) {
+			return want, nil
+		}}
+		got, err := AggregateInterface(devParams, 0)
+		if err != nil {
+			t.Errorf("AggregateInterface(%v,0) got error %v", devParams, err)
+		}
+		if got != want {
+			t.Errorf("AggregateInterface(%v,0) got %q, want %q", devParams, got, want)
+		}
+	})
+
+	t.Run("negative index", func(t *testing.T) {
+		vendorToNamer[fakeVendor] = &fakeNamer{AggregateInterfaceFn: func(int) (string, error) {
+			return "", nil
+		}}
+		_, err := AggregateInterface(devParams, -1)
+		if wantErr := "negative"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("AggregateInterface(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		const wantErr = "fakeAggregateIntfErr"
+		vendorToNamer[fakeVendor] = &fakeNamer{AggregateInterfaceFn: func(int) (string, error) {
+			return "", errors.New(wantErr)
+		}}
+		_, err := AggregateInterface(devParams, 0)
+		if err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("AggregateInterface(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+}
+
+var _ namer.Namer = (*fakeNamer)(nil)
+
 type fakeNamer struct {
-	LoopbackInterfaceFn func(int) (string, error)
+	LoopbackInterfaceFn  func(int) (string, error)
+	AggregatePortFn      func(int) (string, error)
+	AggregateInterfaceFn func(int) (string, error)
 }
 
 func (fn *fakeNamer) LoopbackInterface(index int) (string, error) {
 	return fn.LoopbackInterfaceFn(index)
+}
+
+func (fn *fakeNamer) AggregatePort(index int) (string, error) {
+	return fn.AggregatePortFn(index)
+}
+
+func (fn *fakeNamer) AggregateInterface(index int) (string, error) {
+	return fn.AggregateInterfaceFn(index)
 }
