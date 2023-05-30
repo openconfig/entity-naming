@@ -45,3 +45,30 @@ func (n *Namer) AggregatePort(index int) (string, error) {
 func (n *Namer) AggregateInterface(index int) (string, error) {
 	return n.AggregatePort(index)
 }
+
+// Linecard is a Cisco implementation of namer.Linecard.
+func (n *Namer) Linecard(index int) (string, error) {
+	const maxIndex = 7
+	if index > maxIndex {
+		return "", fmt.Errorf("Cisco linecard index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("0/%d/CPU0", index), nil
+}
+
+// ControllerCard is a Cisco implementation of namer.ControllerCard.
+func (n *Namer) ControllerCard(index int) (string, error) {
+	const maxIndex = 1
+	if index > maxIndex {
+		return "", fmt.Errorf("Cisco controller card index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("0/RP%d/CPU0", index), nil
+}
+
+// Fabric is a Cisco implementation of namer.Fabric.
+func (n *Namer) Fabric(index int) (string, error) {
+	const maxIndex = 7
+	if index > maxIndex {
+		return "", fmt.Errorf("Cisco fabric index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("0/FC%d", index), nil
+}

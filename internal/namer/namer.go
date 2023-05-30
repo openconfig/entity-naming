@@ -33,4 +33,19 @@ type Namer interface {
 	// the specified zero-based index, or an error if the index is invalid.
 	// This method will never be called with a negative index.
 	AggregateInterface(index int) (string, error)
+
+	// Linecard returns the name of the linecard component for the specified
+	// zero-based index, or an error if the index is invalid.
+	// This method will never be called with a negative index.
+	Linecard(index int) (string, error)
+
+	// ControllerCard returns the name of the controller card component for the
+	// specified zero-based index, or an error if the index is invalid.
+	// This method will never be called with a negative index.
+	ControllerCard(index int) (string, error)
+
+	// Fabric returns the name of the fabric component for the specified
+	// zero-based index, or an error if the index is invalid.
+	// This method will never be called with a negative index.
+	Fabric(index int) (string, error)
 }

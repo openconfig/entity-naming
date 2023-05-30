@@ -136,13 +136,122 @@ func TestAggregateInterface(t *testing.T) {
 		}
 	})
 }
+func TestLinecard(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		const want = "fakeLinecard0"
+		vendorToNamer[fakeVendor] = &fakeNamer{LinecardFn: func(int) (string, error) {
+			return want, nil
+		}}
+		got, err := Linecard(devParams, 0)
+		if err != nil {
+			t.Errorf("Linecard(%v,0) got error %v", devParams, err)
+		}
+		if got != want {
+			t.Errorf("Linecard(%v,0) got %q, want %q", devParams, got, want)
+		}
+	})
+
+	t.Run("negative index", func(t *testing.T) {
+		vendorToNamer[fakeVendor] = &fakeNamer{LinecardFn: func(int) (string, error) {
+			return "", nil
+		}}
+		_, err := Linecard(devParams, -1)
+		if wantErr := "negative"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("Linecard(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		const wantErr = "LinecardErr"
+		vendorToNamer[fakeVendor] = &fakeNamer{LinecardFn: func(int) (string, error) {
+			return "", errors.New(wantErr)
+		}}
+		_, err := Linecard(devParams, 0)
+		if err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("Linecard(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+}
+
+func TestControllerCard(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		const want = "fakeControllerCard0"
+		vendorToNamer[fakeVendor] = &fakeNamer{ControllerCardFn: func(int) (string, error) {
+			return want, nil
+		}}
+		got, err := ControllerCard(devParams, 0)
+		if err != nil {
+			t.Errorf("ControllerCard(%v,0) got error %v", devParams, err)
+		}
+		if got != want {
+			t.Errorf("ControllerCard(%v,0) got %q, want %q", devParams, got, want)
+		}
+	})
+
+	t.Run("negative index", func(t *testing.T) {
+		vendorToNamer[fakeVendor] = &fakeNamer{ControllerCardFn: func(int) (string, error) {
+			return "", nil
+		}}
+		_, err := ControllerCard(devParams, -1)
+		if wantErr := "negative"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("ControllerCard(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		const wantErr = "ControllerCardErr"
+		vendorToNamer[fakeVendor] = &fakeNamer{ControllerCardFn: func(int) (string, error) {
+			return "", errors.New(wantErr)
+		}}
+		_, err := ControllerCard(devParams, 0)
+		if err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("ControllerCard(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+}
+
+func TestFabric(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		const want = "fakeFabric0"
+		vendorToNamer[fakeVendor] = &fakeNamer{FabricFn: func(int) (string, error) {
+			return want, nil
+		}}
+		got, err := Fabric(devParams, 0)
+		if err != nil {
+			t.Errorf("Fabric(%v,0) got error %v", devParams, err)
+		}
+		if got != want {
+			t.Errorf("Fabric(%v,0) got %q, want %q", devParams, got, want)
+		}
+	})
+
+	t.Run("negative index", func(t *testing.T) {
+		vendorToNamer[fakeVendor] = &fakeNamer{FabricFn: func(int) (string, error) {
+			return "", nil
+		}}
+		_, err := Fabric(devParams, -1)
+		if wantErr := "negative"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("Fabric(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		const wantErr = "FabricErr"
+		vendorToNamer[fakeVendor] = &fakeNamer{FabricFn: func(int) (string, error) {
+			return "", errors.New(wantErr)
+		}}
+		_, err := Fabric(devParams, 0)
+		if err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("Fabric(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+}
 
 var _ namer.Namer = (*fakeNamer)(nil)
 
 type fakeNamer struct {
-	LoopbackInterfaceFn  func(int) (string, error)
-	AggregatePortFn      func(int) (string, error)
-	AggregateInterfaceFn func(int) (string, error)
+	LoopbackInterfaceFn, AggregatePortFn, AggregateInterfaceFn,
+	LinecardFn, ControllerCardFn, FabricFn func(int) (string, error)
 }
 
 func (fn *fakeNamer) LoopbackInterface(index int) (string, error) {
@@ -155,4 +264,16 @@ func (fn *fakeNamer) AggregatePort(index int) (string, error) {
 
 func (fn *fakeNamer) AggregateInterface(index int) (string, error) {
 	return fn.AggregateInterfaceFn(index)
+}
+
+func (fn *fakeNamer) Linecard(index int) (string, error) {
+	return fn.LinecardFn(index)
+}
+
+func (fn *fakeNamer) ControllerCard(index int) (string, error) {
+	return fn.ControllerCardFn(index)
+}
+
+func (fn *fakeNamer) Fabric(index int) (string, error) {
+	return fn.FabricFn(index)
 }

@@ -88,6 +88,45 @@ func AggregateInterface(dp *DeviceParams, index int) (string, error) {
 	return namer.AggregateInterface(index)
 }
 
+// Linecard returns the vendor-specific name of the linecard with the given
+// zero-based index.
+func Linecard(dp *DeviceParams, index int) (string, error) {
+	namer, err := lookupNamer(dp)
+	if err != nil {
+		return "", err
+	}
+	if index < 0 {
+		return "", fmt.Errorf("interface index cannot be negative: %d", index)
+	}
+	return namer.Linecard(index)
+}
+
+// ControllerCard returns the vendor-specific name of the controller card with
+// the given zero-based index.
+func ControllerCard(dp *DeviceParams, index int) (string, error) {
+	namer, err := lookupNamer(dp)
+	if err != nil {
+		return "", err
+	}
+	if index < 0 {
+		return "", fmt.Errorf("interface index cannot be negative: %d", index)
+	}
+	return namer.ControllerCard(index)
+}
+
+// Fabric returns the vendor-specific name of the fabric with the given
+// zero-based index.
+func Fabric(dp *DeviceParams, index int) (string, error) {
+	namer, err := lookupNamer(dp)
+	if err != nil {
+		return "", err
+	}
+	if index < 0 {
+		return "", fmt.Errorf("interface index cannot be negative: %d", index)
+	}
+	return namer.Fabric(index)
+}
+
 func lookupNamer(dp *DeviceParams) (namer.Namer, error) {
 	vnamer, ok := vendorToNamer[dp.Vendor]
 	if !ok {
