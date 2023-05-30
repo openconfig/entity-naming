@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package cisco provides Cisco-specific platform information.
+// Package cisco provides a Cisco naming implementation.
 package cisco
 
 import (
@@ -23,10 +23,25 @@ import (
 
 var _ namer.Namer = (*Namer)(nil)
 
-// Namer is an Cisco implementation of the namer interface.
+// Namer is a Cisco implementation of the Namer interface.
 type Namer struct{}
 
 // LoopbackInterface is a Cisco implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index int) (string, error) {
 	return fmt.Sprintf("Loopback%d", index), nil
+}
+
+// AggregatePort is a Cisco implementation of namer.AggregatePort.
+func (n *Namer) AggregatePort(index int) (string, error) {
+	index++ // Cisco uses 1-based indices for aggregate ports.
+	const maxIndex = 65535
+	if index > maxIndex {
+		return "", fmt.Errorf("Cisco aggregate index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("Bundle-Ether%d", index), nil
+}
+
+// AggregateInterface is a Cisco implementation of namer.AggregateInterface.
+func (n *Namer) AggregateInterface(index int) (string, error) {
+	return n.AggregatePort(index)
 }

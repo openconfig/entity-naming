@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package juniper provides Juniper-specific platform information.
+// Package juniper provides a Juniper naming implementation.
 package juniper
 
 import (
@@ -23,7 +23,7 @@ import (
 
 var _ namer.Namer = (*Namer)(nil)
 
-// Namer is an Juniper implementation of the namer interface.
+// Namer is a Juniper implementation of the Namer interface.
 type Namer struct{}
 
 // LoopbackInterface is a Juniper implementation of namer.LoopbackInterface.
@@ -33,4 +33,22 @@ func (n *Namer) LoopbackInterface(index int) (string, error) {
 		return "", fmt.Errorf("Juniper loopback index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("lo0.%d", index), nil
+}
+
+// AggregatePort is a Juniper implementation of namer.AggregatePort.
+func (n *Namer) AggregatePort(index int) (string, error) {
+	const maxIndex = 1151
+	if index > maxIndex {
+		return "", fmt.Errorf("Juniper aggregate index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("ae%d", index), nil
+}
+
+// AggregateInterface is a Juniper implementation of namer.AggregateInterface.
+func (n *Namer) AggregateInterface(index int) (string, error) {
+	name, err := n.AggregatePort(index)
+	if err != nil {
+		return "", err
+	}
+	return name + ".0", nil
 }

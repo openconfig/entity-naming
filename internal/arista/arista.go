@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package arista provides Arista-specific platform information.
+// Package arista provides an Arista naming implementation.
 package arista
 
 import (
@@ -23,7 +23,7 @@ import (
 
 var _ namer.Namer = (*Namer)(nil)
 
-// Namer is an Arista implementation of the namer interface.
+// Namer is an Arista implementation of the Namer interface.
 type Namer struct{}
 
 // LoopbackInterface is an Arista implementation of namer.LoopbackInterface.
@@ -33,4 +33,19 @@ func (n *Namer) LoopbackInterface(index int) (string, error) {
 		return "", fmt.Errorf("Arista loopback index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("Loopback%d", index), nil
+}
+
+// AggregatePort is an Arista implementation of namer.AggregatePort.
+func (n *Namer) AggregatePort(index int) (string, error) {
+	index++
+	const maxIndex = 999999
+	if index > maxIndex {
+		return "", fmt.Errorf("Arista aggregate index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("Port-Channel%d", index), nil
+}
+
+// AggregateInterface is an Arista implementation of namer.AggregateInterface.
+func (n *Namer) AggregateInterface(index int) (string, error) {
+	return n.AggregatePort(index)
 }
