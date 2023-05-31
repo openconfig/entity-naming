@@ -36,11 +36,11 @@ const (
 	VendorNokia   = Vendor("Nokia")
 )
 
-var vendorToNamer = map[Vendor]namer.Namer{
-	VendorArista:  new(arista.Namer),
-	VendorCisco:   new(cisco.Namer),
-	VendorJuniper: new(juniper.Namer),
-	VendorNokia:   new(nokia.Namer),
+var namerFactories = map[Vendor]func(string) namer.Namer{
+	VendorArista:  func(hwModel string) namer.Namer { return &arista.Namer{HardwareModel: hwModel} },
+	VendorCisco:   func(hwModel string) namer.Namer { return &cisco.Namer{HardwareModel: hwModel} },
+	VendorJuniper: func(hwModel string) namer.Namer { return &juniper.Namer{HardwareModel: hwModel} },
+	VendorNokia:   func(hwModel string) namer.Namer { return &nokia.Namer{HardwareModel: hwModel} },
 }
 
 // DeviceParams are parameters of a network device.
@@ -49,7 +49,7 @@ type DeviceParams struct {
 	HardwareModel string
 }
 
-// LoopbackInterface returns the platform-specific name of the loopback
+// LoopbackInterface returns the vendor-specific name of the loopback
 // interface with the given zero-based index.
 func LoopbackInterface(dp *DeviceParams, index int) (string, error) {
 	namer, err := lookupNamer(dp)
@@ -62,8 +62,8 @@ func LoopbackInterface(dp *DeviceParams, index int) (string, error) {
 	return namer.LoopbackInterface(index)
 }
 
-// AggregatePort returns the platform-specific name of the aggregate physical
-// interface with the given zero-based index.
+// AggregatePort returns the vendor-specific name of the aggregate ports with
+// the given zero-based index.
 func AggregatePort(dp *DeviceParams, index int) (string, error) {
 	namer, err := lookupNamer(dp)
 	if err != nil {
@@ -75,8 +75,8 @@ func AggregatePort(dp *DeviceParams, index int) (string, error) {
 	return namer.AggregatePort(index)
 }
 
-// AggregateInterface returns the platform-specific name of the aggregate
-// logical interface with the given zero-based index.
+// AggregateInterface returns the vendor-specific name of the interface bound to
+// the aggregate port with the given zero-based index.
 func AggregateInterface(dp *DeviceParams, index int) (string, error) {
 	namer, err := lookupNamer(dp)
 	if err != nil {
@@ -128,9 +128,9 @@ func Fabric(dp *DeviceParams, index int) (string, error) {
 }
 
 func lookupNamer(dp *DeviceParams) (namer.Namer, error) {
-	vnamer, ok := vendorToNamer[dp.Vendor]
+	nf, ok := namerFactories[dp.Vendor]
 	if !ok {
 		return nil, fmt.Errorf("no Namer for vendor %v", dp.Vendor)
 	}
-	return vnamer, nil
+	return nf(dp.HardwareModel), nil
 }

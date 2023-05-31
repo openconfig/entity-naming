@@ -24,7 +24,9 @@ import (
 var _ namer.Namer = (*Namer)(nil)
 
 // Namer is an Arista implementation of the Namer interface.
-type Namer struct{}
+type Namer struct {
+	HardwareModel string
+}
 
 // LoopbackInterface is an Arista implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index int) (string, error) {
