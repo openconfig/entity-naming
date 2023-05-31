@@ -52,3 +52,30 @@ func (n *Namer) AggregateInterface(index int) (string, error) {
 	}
 	return name + ".0", nil
 }
+
+// Linecard is a Juniper implementation of namer.Linecard.
+func (n *Namer) Linecard(index int) (string, error) {
+	const maxIndex = 7
+	if index > maxIndex {
+		return "", fmt.Errorf("Juniper linecard index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("FPC%d", index), nil
+}
+
+// ControllerCard is a Juniper implementation of namer.ControllerCard.
+func (n *Namer) ControllerCard(index int) (string, error) {
+	const maxIndex = 1
+	if index > maxIndex {
+		return "", fmt.Errorf("Juniper controller card index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("RE%d", index), nil
+}
+
+// Fabric is a Juniper implementation of namer.Fabric.
+func (n *Namer) Fabric(index int) (string, error) {
+	const maxIndex = 5
+	if index > maxIndex {
+		return "", fmt.Errorf("Juniper fabric index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("SIB%d", index), nil
+}

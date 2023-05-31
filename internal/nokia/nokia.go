@@ -52,3 +52,30 @@ func (n *Namer) AggregateInterface(index int) (string, error) {
 	}
 	return name + ".0", nil
 }
+
+// Linecard is a Nokia implementation of namer.Linecard.
+func (n *Namer) Linecard(index int) (string, error) {
+	const maxIndex = 7
+	if index > maxIndex {
+		return "", fmt.Errorf("Nokia linecard index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("Linecard%d", index+1), nil
+}
+
+// ControllerCard is a Nokia implementation of namer.ControllerCard.
+func (n *Namer) ControllerCard(index int) (string, error) {
+	const maxIndex = 1
+	if index > maxIndex {
+		return "", fmt.Errorf("Nokia controller card index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("Supervisor%d", index+1), nil
+}
+
+// Fabric is a Nokia implementation of namer.Fabric.
+func (n *Namer) Fabric(index int) (string, error) {
+	const maxIndex = 7
+	if index > maxIndex {
+		return "", fmt.Errorf("Nokia fabric index cannot exceed %d, got %d", maxIndex, index)
+	}
+	return fmt.Sprintf("Fabric%d", index+1), nil
+}

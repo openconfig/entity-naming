@@ -115,3 +115,105 @@ func TestAggregateInterface(t *testing.T) {
 		}
 	})
 }
+
+func TestLinecard(t *testing.T) {
+	tests := []struct {
+		desc  string
+		index int
+		want  string
+	}{{
+		desc:  "min",
+		index: 0,
+		want:  "0/0/CPU0",
+	}, {
+		desc:  "max",
+		index: 7,
+		want:  "0/7/CPU0",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := cn.Linecard(test.index)
+			if err != nil {
+				t.Fatalf("Linecard(%v) got error: %v", test.index, err)
+			}
+			if got != test.want {
+				t.Errorf("Linecard(%d) got %q, want %q", test.index, got, test.want)
+			}
+		})
+	}
+
+	t.Run("over max", func(t *testing.T) {
+		_, err := cn.Linecard(8)
+		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Fatalf("Linecard(8) got error %v, want substring %q", err, wantErr)
+		}
+	})
+}
+
+func TestControllerCard(t *testing.T) {
+	tests := []struct {
+		desc  string
+		index int
+		want  string
+	}{{
+		desc:  "min",
+		index: 0,
+		want:  "0/RP0/CPU0",
+	}, {
+		desc:  "max",
+		index: 1,
+		want:  "0/RP1/CPU0",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := cn.ControllerCard(test.index)
+			if err != nil {
+				t.Fatalf("ControllerCard(%v) got error: %v", test.index, err)
+			}
+			if got != test.want {
+				t.Errorf("ControllerCard(%d) got %q, want %q", test.index, got, test.want)
+			}
+		})
+	}
+
+	t.Run("over max", func(t *testing.T) {
+		_, err := cn.ControllerCard(3)
+		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Fatalf("ControllerCard(3) got error %v, want substring %q", err, wantErr)
+		}
+	})
+}
+
+func TestFabric(t *testing.T) {
+	tests := []struct {
+		desc  string
+		index int
+		want  string
+	}{{
+		desc:  "min",
+		index: 0,
+		want:  "0/FC0",
+	}, {
+		desc:  "max",
+		index: 7,
+		want:  "0/FC7",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := cn.Fabric(test.index)
+			if err != nil {
+				t.Fatalf("Fabric(%v) got error: %v", test.index, err)
+			}
+			if got != test.want {
+				t.Errorf("Fabric(%d) got %q, want %q", test.index, got, test.want)
+			}
+		})
+	}
+
+	t.Run("over max", func(t *testing.T) {
+		_, err := cn.Fabric(8)
+		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Fatalf("Fabric(8) got error %v, want substring %q", err, wantErr)
+		}
+	})
+}
