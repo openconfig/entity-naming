@@ -37,10 +37,10 @@ const (
 )
 
 var namerFactories = map[Vendor]func(string) namer.Namer{
-	VendorArista:  func(hwModel string) namer.Namer { return &arista.Namer{HardwareModel: hwModel} },
-	VendorCisco:   func(hwModel string) namer.Namer { return &cisco.Namer{HardwareModel: hwModel} },
-	VendorJuniper: func(hwModel string) namer.Namer { return &juniper.Namer{HardwareModel: hwModel} },
-	VendorNokia:   func(hwModel string) namer.Namer { return &nokia.Namer{HardwareModel: hwModel} },
+	VendorArista:  func(hwm string) namer.Namer { return &arista.Namer{HardwareModel: hwm} },
+	VendorCisco:   func(hwm string) namer.Namer { return &cisco.Namer{HardwareModel: hwm} },
+	VendorJuniper: func(hwm string) namer.Namer { return &juniper.Namer{HardwareModel: hwm} },
+	VendorNokia:   func(hwm string) namer.Namer { return &nokia.Namer{HardwareModel: hwm} },
 }
 
 // DeviceParams are parameters of a network device.
