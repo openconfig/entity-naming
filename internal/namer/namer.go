@@ -15,37 +15,35 @@
 // Package namer provides a namer strategy interface for naming entities.
 package namer
 
-// Should all of these be uint
-
 // Namer is a strategy interface for naming entities.
 type Namer interface {
-	// LoopbackInterface returns the name of a loopback interface for the
-	// specified zero-based index, or an error if the index is invalid.
+	// LoopbackInterface returns the name of the loopback interface with the
+	// specified zero-based index, or an error if no such name exists.
 	// This method will never be called with a negative index.
 	LoopbackInterface(index int) (string, error)
 
-	// AggregatePort returns the name of an aggregate physical interface for
-	// the specified zero-based index, or an error if the index is invalid.
+	// AggregatePort returns the name of the aggregate port with the specified
+	// zero-based index, or an error if no such name exists.
 	// This method will never be called with a negative index.
 	AggregatePort(index int) (string, error)
 
-	// AggregateInterface returns the name of an aggregate logical interface for
-	// the specified zero-based index, or an error if the index is invalid.
-	// This method will never be called with a negative index.
+	// AggregateInterface returns the name of the interface bound to the aggregate
+	// port with the specified zero-based index, or an error if no such name
+	// exists. This method will never be called with a negative index.
 	AggregateInterface(index int) (string, error)
 
-	// Linecard returns the name of the linecard component for the specified
-	// zero-based index, or an error if the index is invalid.
+	// Linecard returns the name of the linecard component with the specified
+	// zero-based index, or an error if no such name exists.
 	// This method will never be called with a negative index.
 	Linecard(index int) (string, error)
 
-	// ControllerCard returns the name of the controller card component for the
-	// specified zero-based index, or an error if the index is invalid.
+	// ControllerCard returns the name of the controller card component with the
+	// specified zero-based index, or an error if no such name exists.
 	// This method will never be called with a negative index.
 	ControllerCard(index int) (string, error)
 
-	// Fabric returns the name of the fabric component for the specified
-	// zero-based index, or an error if the index is invalid.
+	// Fabric returns the name of the fabric component with the specified
+	// zero-based index, or an error if no such name exists.
 	// This method will never be called with a negative index.
 	Fabric(index int) (string, error)
 }
