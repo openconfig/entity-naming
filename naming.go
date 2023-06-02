@@ -62,21 +62,8 @@ func LoopbackInterface(dp *DeviceParams, index int) (string, error) {
 	return namer.LoopbackInterface(index)
 }
 
-// AggregatePort returns the vendor-specific name of the aggregate port with
-// the given zero-based index.
-func AggregatePort(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
-	if err != nil {
-		return "", err
-	}
-	if index < 0 {
-		return "", fmt.Errorf("interface index cannot be negative: %d", index)
-	}
-	return namer.AggregatePort(index)
-}
-
-// AggregateInterface returns the vendor-specific name of the interface bound to
-// the aggregate port with the given zero-based index.
+// AggregatInterface returns the vendor-specific name of the aggregate interface
+// with the given zero-based index.
 func AggregateInterface(dp *DeviceParams, index int) (string, error) {
 	namer, err := lookupNamer(dp)
 	if err != nil {
@@ -86,6 +73,19 @@ func AggregateInterface(dp *DeviceParams, index int) (string, error) {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
 	return namer.AggregateInterface(index)
+}
+
+// AggregateMemberInterface returns the vendor-specific name of the member
+// interface bound to the aggregate interface with the given zero-based index.
+func AggregateMemberInterface(dp *DeviceParams, index int) (string, error) {
+	namer, err := lookupNamer(dp)
+	if err != nil {
+		return "", err
+	}
+	if index < 0 {
+		return "", fmt.Errorf("interface index cannot be negative: %d", index)
+	}
+	return namer.AggregateMemberInterface(index)
 }
 
 // Linecard returns the vendor-specific name of the linecard with the given

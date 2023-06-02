@@ -22,15 +22,16 @@ type Namer interface {
 	// This method will never be called with a negative index.
 	LoopbackInterface(index int) (string, error)
 
-	// AggregatePort returns the name of the aggregate port with the specified
-	// zero-based index, or an error if no such name exists.
+	// AggregateInterface returns the name of the aggregate interface with
+	// the specified zero-based index, or an error if no such name exists.
 	// This method will never be called with a negative index.
-	AggregatePort(index int) (string, error)
-
-	// AggregateInterface returns the name of the interface bound to the aggregate
-	// port with the specified zero-based index, or an error if no such name
-	// exists. This method will never be called with a negative index.
 	AggregateInterface(index int) (string, error)
+
+	// AggregateMemberInterface returns the name of the member interface
+	// bound to the aggregate interface with the specified zero-based index,
+	// or an error if no such name exists.
+	// This method will never be called with a negative index.
+	AggregateMemberInterface(index int) (string, error)
 
 	// Linecard returns the name of the linecard component with the specified
 	// zero-based index, or an error if no such name exists.

@@ -37,8 +37,8 @@ func (n *Namer) LoopbackInterface(index int) (string, error) {
 	return fmt.Sprintf("lo%d", index), nil
 }
 
-// AggregatePort is a Nokia implementation of namer.AggregatePort.
-func (n *Namer) AggregatePort(index int) (string, error) {
+// AggregateInterface is a Nokia implementation of namer.AggregateInterface.
+func (n *Namer) AggregateInterface(index int) (string, error) {
 	const maxIndex = 127
 	if index > maxIndex {
 		return "", fmt.Errorf("Nokia aggregate index cannot exceed %d, got %d", maxIndex, index)
@@ -46,9 +46,9 @@ func (n *Namer) AggregatePort(index int) (string, error) {
 	return fmt.Sprintf("lag%d", index+1), nil
 }
 
-// AggregateInterface is a Nokia implementation of namer.AggregateInterface.
-func (n *Namer) AggregateInterface(index int) (string, error) {
-	name, err := n.AggregatePort(index)
+// AggregateMemberInterface is a Nokia implementation of namer.AggregateMemberInterface.
+func (n *Namer) AggregateMemberInterface(index int) (string, error) {
+	name, err := n.AggregateInterface(index)
 	if err != nil {
 		return "", err
 	}

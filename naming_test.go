@@ -63,46 +63,9 @@ func TestLoopbackInterface(t *testing.T) {
 	})
 }
 
-func TestAggregatePort(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		const want = "fakeAggregatePort0"
-		setFakeNamer(&fakeNamer{AggregatePortFn: func(int) (string, error) {
-			return want, nil
-		}})
-		got, err := AggregatePort(devParams, 0)
-		if err != nil {
-			t.Errorf("AggregatePort(%v,0) got error %v", devParams, err)
-		}
-		if got != want {
-			t.Errorf("AggregatePort(%v,0) got %q, want %q", devParams, got, want)
-		}
-	})
-
-	t.Run("negative index", func(t *testing.T) {
-		setFakeNamer(&fakeNamer{AggregatePortFn: func(int) (string, error) {
-			return "", nil
-		}})
-		_, err := AggregatePort(devParams, -1)
-		if wantErr := "negative"; err == nil || !strings.Contains(err.Error(), wantErr) {
-			t.Errorf("AggregatePort(%v,0) got error %v, want substring %q", devParams, err, wantErr)
-		}
-	})
-
-	t.Run("error", func(t *testing.T) {
-		const wantErr = "fakeAggregatePortErr"
-		setFakeNamer(&fakeNamer{AggregatePortFn: func(int) (string, error) {
-			return "", errors.New(wantErr)
-		}})
-		_, err := AggregatePort(devParams, 0)
-		if err == nil || !strings.Contains(err.Error(), wantErr) {
-			t.Errorf("AggregatePort(%v,0) got error %v, want substring %q", devParams, err, wantErr)
-		}
-	})
-}
-
 func TestAggregateInterface(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		const want = "fakeAggregateIntf0"
+		const want = "fakeAggregate0"
 		setFakeNamer(&fakeNamer{AggregateInterfaceFn: func(int) (string, error) {
 			return want, nil
 		}})
@@ -126,13 +89,50 @@ func TestAggregateInterface(t *testing.T) {
 	})
 
 	t.Run("error", func(t *testing.T) {
-		const wantErr = "fakeAggregateIntfErr"
+		const wantErr = "fakeAggregateErr"
 		setFakeNamer(&fakeNamer{AggregateInterfaceFn: func(int) (string, error) {
 			return "", errors.New(wantErr)
 		}})
 		_, err := AggregateInterface(devParams, 0)
 		if err == nil || !strings.Contains(err.Error(), wantErr) {
 			t.Errorf("AggregateInterface(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+}
+
+func TestAggregateMemberInterface(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		const want = "fakeAggregateMember0"
+		setFakeNamer(&fakeNamer{AggregateMemberInterfaceFn: func(int) (string, error) {
+			return want, nil
+		}})
+		got, err := AggregateMemberInterface(devParams, 0)
+		if err != nil {
+			t.Errorf("AggregateMemberInterface(%v,0) got error %v", devParams, err)
+		}
+		if got != want {
+			t.Errorf("AggregateMemberInterface(%v,0) got %q, want %q", devParams, got, want)
+		}
+	})
+
+	t.Run("negative index", func(t *testing.T) {
+		setFakeNamer(&fakeNamer{AggregateMemberInterfaceFn: func(int) (string, error) {
+			return "", nil
+		}})
+		_, err := AggregateMemberInterface(devParams, -1)
+		if wantErr := "negative"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("AggregateMemberInterface(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		const wantErr = "fakeAggregateMemberErr"
+		setFakeNamer(&fakeNamer{AggregateMemberInterfaceFn: func(int) (string, error) {
+			return "", errors.New(wantErr)
+		}})
+		_, err := AggregateMemberInterface(devParams, 0)
+		if err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("AggregateMemberInterface(%v,0) got error %v, want substring %q", devParams, err, wantErr)
 		}
 	})
 }
@@ -254,7 +254,7 @@ func setFakeNamer(fn *fakeNamer) {
 var _ namer.Namer = (*fakeNamer)(nil)
 
 type fakeNamer struct {
-	LoopbackInterfaceFn, AggregatePortFn, AggregateInterfaceFn,
+	LoopbackInterfaceFn, AggregateInterfaceFn, AggregateMemberInterfaceFn,
 	LinecardFn, ControllerCardFn, FabricFn func(int) (string, error)
 }
 
@@ -262,12 +262,12 @@ func (fn *fakeNamer) LoopbackInterface(index int) (string, error) {
 	return fn.LoopbackInterfaceFn(index)
 }
 
-func (fn *fakeNamer) AggregatePort(index int) (string, error) {
-	return fn.AggregatePortFn(index)
-}
-
 func (fn *fakeNamer) AggregateInterface(index int) (string, error) {
 	return fn.AggregateInterfaceFn(index)
+}
+
+func (fn *fakeNamer) AggregateMemberInterface(index int) (string, error) {
+	return fn.AggregateMemberInterfaceFn(index)
 }
 
 func (fn *fakeNamer) Linecard(index int) (string, error) {
