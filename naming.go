@@ -62,7 +62,7 @@ func LoopbackInterface(dp *DeviceParams, index int) (string, error) {
 	return namer.LoopbackInterface(index)
 }
 
-// AggregatePort returns the vendor-specific name of the aggregate ports with
+// AggregatePort returns the vendor-specific name of the aggregate port with
 // the given zero-based index.
 func AggregatePort(dp *DeviceParams, index int) (string, error) {
 	namer, err := lookupNamer(dp)
