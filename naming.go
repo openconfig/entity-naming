@@ -62,8 +62,8 @@ func LoopbackInterface(dp *DeviceParams, index int) (string, error) {
 	return namer.LoopbackInterface(index)
 }
 
-// AggregatInterface returns the vendor-specific name of the aggregate interface
-// with the given zero-based index.
+// AggregateInterface returns the vendor-specific name of the aggregate
+// interface with the given zero-based index.
 func AggregateInterface(dp *DeviceParams, index int) (string, error) {
 	namer, err := lookupNamer(dp)
 	if err != nil {
