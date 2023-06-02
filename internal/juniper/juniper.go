@@ -24,7 +24,9 @@ import (
 var _ namer.Namer = (*Namer)(nil)
 
 // Namer is a Juniper implementation of the Namer interface.
-type Namer struct{}
+type Namer struct {
+	HardwareModel string
+}
 
 // LoopbackInterface is a Juniper implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index int) (string, error) {
@@ -35,8 +37,8 @@ func (n *Namer) LoopbackInterface(index int) (string, error) {
 	return fmt.Sprintf("lo0.%d", index), nil
 }
 
-// AggregatePort is a Juniper implementation of namer.AggregatePort.
-func (n *Namer) AggregatePort(index int) (string, error) {
+// AggregateInterface is a Juniper implementation of namer.AggregateInterface.
+func (n *Namer) AggregateInterface(index int) (string, error) {
 	const maxIndex = 1151
 	if index > maxIndex {
 		return "", fmt.Errorf("Juniper aggregate index cannot exceed %d, got %d", maxIndex, index)
@@ -44,9 +46,9 @@ func (n *Namer) AggregatePort(index int) (string, error) {
 	return fmt.Sprintf("ae%d", index), nil
 }
 
-// AggregateInterface is a Juniper implementation of namer.AggregateInterface.
-func (n *Namer) AggregateInterface(index int) (string, error) {
-	name, err := n.AggregatePort(index)
+// AggregateMemberInterface is a Juniper implementation of namer.AggregateMemberInterface.
+func (n *Namer) AggregateMemberInterface(index int) (string, error) {
+	name, err := n.AggregateInterface(index)
 	if err != nil {
 		return "", err
 	}

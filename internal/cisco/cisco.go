@@ -24,26 +24,27 @@ import (
 var _ namer.Namer = (*Namer)(nil)
 
 // Namer is a Cisco implementation of the Namer interface.
-type Namer struct{}
+type Namer struct {
+	HardwareModel string
+}
 
 // LoopbackInterface is a Cisco implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index int) (string, error) {
 	return fmt.Sprintf("Loopback%d", index), nil
 }
 
-// AggregatePort is a Cisco implementation of namer.AggregatePort.
-func (n *Namer) AggregatePort(index int) (string, error) {
-	index++ // Cisco uses 1-based indices for aggregate ports.
-	const maxIndex = 65535
+// AggregateInterface is a Cisco implementation of namer.AggregateInterface.
+func (n *Namer) AggregateInterface(index int) (string, error) {
+	const maxIndex = 65534
 	if index > maxIndex {
 		return "", fmt.Errorf("Cisco aggregate index cannot exceed %d, got %d", maxIndex, index)
 	}
-	return fmt.Sprintf("Bundle-Ether%d", index), nil
+	return fmt.Sprintf("Bundle-Ether%d", index+1), nil
 }
 
-// AggregateInterface is a Cisco implementation of namer.AggregateInterface.
-func (n *Namer) AggregateInterface(index int) (string, error) {
-	return n.AggregatePort(index)
+// AggregateMemberInterface is a Cisco implementation of namer.AggregateMemberInterface.
+func (n *Namer) AggregateMemberInterface(index int) (string, error) {
+	return n.AggregateInterface(index)
 }
 
 // Linecard is a Cisco implementation of namer.Linecard.

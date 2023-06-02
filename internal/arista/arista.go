@@ -24,7 +24,9 @@ import (
 var _ namer.Namer = (*Namer)(nil)
 
 // Namer is an Arista implementation of the Namer interface.
-type Namer struct{}
+type Namer struct {
+	HardwareModel string
+}
 
 // LoopbackInterface is an Arista implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index int) (string, error) {
@@ -35,19 +37,18 @@ func (n *Namer) LoopbackInterface(index int) (string, error) {
 	return fmt.Sprintf("Loopback%d", index), nil
 }
 
-// AggregatePort is an Arista implementation of namer.AggregatePort.
-func (n *Namer) AggregatePort(index int) (string, error) {
-	index++
-	const maxIndex = 999999
+// AggregateInterface is an Arista implementation of namer.AggregateInterface.
+func (n *Namer) AggregateInterface(index int) (string, error) {
+	const maxIndex = 999998
 	if index > maxIndex {
 		return "", fmt.Errorf("Arista aggregate index cannot exceed %d, got %d", maxIndex, index)
 	}
-	return fmt.Sprintf("Port-Channel%d", index), nil
+	return fmt.Sprintf("Port-Channel%d", index+1), nil
 }
 
-// AggregateInterface is an Arista implementation of namer.AggregateInterface.
-func (n *Namer) AggregateInterface(index int) (string, error) {
-	return n.AggregatePort(index)
+// AggregateMemberInterface is an Arista implementation of namer.AggregateMemberInterface.
+func (n *Namer) AggregateMemberInterface(index int) (string, error) {
+	return n.AggregateInterface(index)
 }
 
 // Linecard is an Arista implementation of namer.Linecard.

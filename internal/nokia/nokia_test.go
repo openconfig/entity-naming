@@ -55,7 +55,7 @@ func TestLoopbackInterface(t *testing.T) {
 	})
 }
 
-func TestAggregatePort(t *testing.T) {
+func TestAggregateInterface(t *testing.T) {
 	tests := []struct {
 		desc  string
 		index int
@@ -68,40 +68,6 @@ func TestAggregatePort(t *testing.T) {
 		desc:  "max",
 		index: 127,
 		want:  "lag128",
-	}}
-	for _, test := range tests {
-		t.Run(test.desc, func(t *testing.T) {
-			got, err := nn.AggregatePort(test.index)
-			if err != nil {
-				t.Fatalf("AggregatePort(%v) got error: %v", test.index, err)
-			}
-			if got != test.want {
-				t.Errorf("AggregatePort(%d) got %q, want %q", test.index, got, test.want)
-			}
-		})
-	}
-
-	t.Run("over max", func(t *testing.T) {
-		_, err := nn.AggregatePort(128)
-		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
-			t.Fatalf("AggregatePort(128) got error %v, want substring %q", err, wantErr)
-		}
-	})
-}
-
-func TestAggregateInterface(t *testing.T) {
-	tests := []struct {
-		desc  string
-		index int
-		want  string
-	}{{
-		desc:  "min",
-		index: 0,
-		want:  "lag1.0",
-	}, {
-		desc:  "max",
-		index: 127,
-		want:  "lag128.0",
 	}}
 	for _, test := range tests {
 		t.Run(test.desc, func(t *testing.T) {
@@ -119,6 +85,40 @@ func TestAggregateInterface(t *testing.T) {
 		_, err := nn.AggregateInterface(128)
 		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
 			t.Fatalf("AggregateInterface(128) got error %v, want substring %q", err, wantErr)
+		}
+	})
+}
+
+func TestAggregateMemberInterface(t *testing.T) {
+	tests := []struct {
+		desc  string
+		index int
+		want  string
+	}{{
+		desc:  "min",
+		index: 0,
+		want:  "lag1.0",
+	}, {
+		desc:  "max",
+		index: 127,
+		want:  "lag128.0",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := nn.AggregateMemberInterface(test.index)
+			if err != nil {
+				t.Fatalf("AggregateMemberInterface(%v) got error: %v", test.index, err)
+			}
+			if got != test.want {
+				t.Errorf("AggregateMemberInterface(%d) got %q, want %q", test.index, got, test.want)
+			}
+		})
+	}
+
+	t.Run("over max", func(t *testing.T) {
+		_, err := nn.AggregateMemberInterface(128)
+		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Fatalf("AggregateMemberInterface(128) got error %v, want substring %q", err, wantErr)
 		}
 	})
 }
