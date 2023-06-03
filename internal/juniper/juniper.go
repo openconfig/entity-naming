@@ -17,6 +17,7 @@ package juniper
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/openconfig/entity-naming/internal/namer"
 )
@@ -80,4 +81,28 @@ func (n *Namer) Fabric(index int) (string, error) {
 		return "", fmt.Errorf("Juniper fabric index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("SIB%d", index), nil
+}
+
+// Port is a Juniper implementation of namer.Port.
+func (n *Namer) Port(pp *namer.PortParams) (string, error) {
+	var nameBuilder strings.Builder
+	nameBuilder.WriteString("et-")
+	if pp.SlotIndex == nil {
+		nameBuilder.WriteString("0/")
+		nameBuilder.WriteString(fmt.Sprintf("%d", pp.PICIndex))
+	} else {
+		nameBuilder.WriteString(fmt.Sprintf("%d", *pp.SlotIndex))
+		nameBuilder.WriteString("/0")
+	}
+	nameBuilder.WriteString(fmt.Sprintf("/%d", pp.PortIndex))
+	if pp.ChannelIndex != nil {
+		nameBuilder.WriteString(fmt.Sprintf(":%d", *pp.ChannelIndex))
+	}
+	return nameBuilder.String(), nil
+}
+
+// IsFixedFormFactor is a Juniper implementation of namer.IsFixedFormFactor.
+func (n *Namer) IsFixedFormFactor() bool {
+	// TODO(juniper): Fill in this implementation.
+	return false
 }

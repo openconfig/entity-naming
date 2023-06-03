@@ -17,8 +17,10 @@ package cisco
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/openconfig/entity-naming/internal/namer"
+	"github.com/openconfig/entity-naming/oc"
 )
 
 var _ namer.Namer = (*Namer)(nil)
@@ -72,4 +74,36 @@ func (n *Namer) Fabric(index int) (string, error) {
 		return "", fmt.Errorf("Cisco fabric index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("0/FC%d", index), nil
+}
+
+var speedStrings = map[oc.E_IfEthernet_ETHERNET_SPEED]string{
+	oc.IfEthernet_ETHERNET_SPEED_SPEED_10GB:  "TenGig",
+	oc.IfEthernet_ETHERNET_SPEED_SPEED_100GB: "HundredGig",
+	oc.IfEthernet_ETHERNET_SPEED_SPEED_400GB: "FourHundredGig",
+}
+
+// Port is a Cisco implementation of namer.Port.
+func (n *Namer) Port(pp *namer.PortParams) (string, error) {
+	speed, ok := speedStrings[pp.Speed]
+	if !ok {
+		return "", fmt.Errorf("no known string for port speed %v", pp.Speed)
+	}
+	var nameBuilder strings.Builder
+	nameBuilder.WriteString(speed + "E0/")
+	if pp.SlotIndex == nil {
+		nameBuilder.WriteString("0")
+	} else {
+		nameBuilder.WriteString(fmt.Sprintf("%d", *pp.SlotIndex))
+	}
+	nameBuilder.WriteString(fmt.Sprintf("/0/%d", pp.PortIndex))
+	if pp.ChannelIndex != nil {
+		nameBuilder.WriteString(fmt.Sprintf("/%d", *pp.ChannelIndex))
+	}
+	return nameBuilder.String(), nil
+}
+
+// IsFixedFormFactor is a Cisco implementation of namer.IsFixedFormFactor.
+func (n *Namer) IsFixedFormFactor() bool {
+	// TODO(cisco): Fill in this implementation.
+	return false
 }

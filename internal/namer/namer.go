@@ -15,6 +15,12 @@
 // Package namer provides a namer strategy interface for naming entities.
 package namer
 
+import (
+	"fmt"
+
+	"github.com/openconfig/entity-naming/oc"
+)
+
 // Namer is a strategy interface for naming entities.
 type Namer interface {
 	// LoopbackInterface returns the name of the loopback interface with the
@@ -47,4 +53,32 @@ type Namer interface {
 	// zero-based index, or an error if no such name exists.
 	// This method will never be called with a negative index.
 	Fabric(index int) (string, error)
+
+	// Port returns the name of a physical port with the specified parameters,
+	// or an error if no such name exists. This method will never be called with
+	// negative index parameters or an unset or unknown port speed.
+	Port(port *PortParams) (string, error)
+
+	// Return whether the device has a fixed form factor.
+	IsFixedFormFactor() bool
+}
+
+// PortParams are parameters of a network port.
+type PortParams struct {
+	// SlotIndex is the zero-based index of the slot on the device.
+	// This value is nil on fixed form factor devices.
+	SlotIndex *int
+	// PICIndex is the zero-based index of the PIC within the slot.
+	PICIndex int
+	// PortIndex is the zero-based index of the port within the PIC.
+	PortIndex int
+	// ChannelIndex is the zero-based index of the channel within the Port.
+	// This value is nil for unchannelized ports.
+	ChannelIndex *int
+	// Speed is the ethernet link speed of the port.
+	Speed oc.E_IfEthernet_ETHERNET_SPEED
+}
+
+func (pp *PortParams) String() string {
+	return fmt.Sprintf("%+v", *pp)
 }

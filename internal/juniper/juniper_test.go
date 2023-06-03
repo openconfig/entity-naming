@@ -17,6 +17,8 @@ package juniper
 import (
 	"strings"
 	"testing"
+
+	"github.com/openconfig/entity-naming/internal/namer"
 )
 
 var jn = new(Namer)
@@ -121,6 +123,59 @@ func TestAggregateMemberInterface(t *testing.T) {
 			t.Fatalf("AggregateMemberInterface(1152) got error %v, want substring %q", err, wantErr)
 		}
 	})
+}
+
+func TestPort(t *testing.T) {
+	intPtr := func(i int) *int { return &i }
+
+	tests := []struct {
+		desc string
+		pp   *namer.PortParams
+		want string
+	}{{
+		desc: "standard",
+		pp: &namer.PortParams{
+			SlotIndex: intPtr(1),
+			PICIndex:  2,
+			PortIndex: 3,
+		},
+		want: "et-1/0/3",
+	}, {
+		desc: "channelized",
+		pp: &namer.PortParams{
+			SlotIndex:    intPtr(1),
+			PICIndex:     2,
+			PortIndex:    3,
+			ChannelIndex: intPtr(4),
+		},
+		want: "et-1/0/3:4",
+	}, {
+		desc: "fixed form factor",
+		pp: &namer.PortParams{
+			PICIndex:  2,
+			PortIndex: 3,
+		},
+		want: "et-0/2/3",
+	}, {
+		desc: "channelized fixed form factor",
+		pp: &namer.PortParams{
+			PICIndex:     2,
+			PortIndex:    3,
+			ChannelIndex: intPtr(4),
+		},
+		want: "et-0/2/3:4",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := jn.Port(test.pp)
+			if err != nil {
+				t.Fatalf("Port(%v) got error: %v", test.pp, err)
+			}
+			if got != test.want {
+				t.Errorf("Port(%v) got %q, want %q", test.pp, got, test.want)
+			}
+		})
+	}
 }
 
 func TestLinecard(t *testing.T) {

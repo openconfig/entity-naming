@@ -17,6 +17,7 @@ package nokia
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/openconfig/entity-naming/internal/namer"
 )
@@ -80,4 +81,26 @@ func (n *Namer) Fabric(index int) (string, error) {
 		return "", fmt.Errorf("Nokia fabric index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("Fabric%d", index+1), nil
+}
+
+// Port is a Nokia implementation of namer.Port.
+func (n *Namer) Port(pp *namer.PortParams) (string, error) {
+	var nameBuilder strings.Builder
+	nameBuilder.WriteString("et-")
+	if pp.SlotIndex == nil {
+		nameBuilder.WriteString("1")
+	} else {
+		nameBuilder.WriteString(fmt.Sprintf("%d", (*pp.SlotIndex)+1))
+	}
+	nameBuilder.WriteString(fmt.Sprintf("/%d", pp.PortIndex+1))
+	if pp.ChannelIndex != nil {
+		nameBuilder.WriteString(fmt.Sprintf("/%d", *pp.ChannelIndex+1))
+	}
+	return nameBuilder.String(), nil
+}
+
+// IsFixedFormFactor is a Nokia implementation of namer.IsFixedFormFactor.
+func (n *Namer) IsFixedFormFactor() bool {
+	// TODO(nokia): Fill in this implementation.
+	return false
 }
