@@ -17,7 +17,7 @@ of the vendor-specific entity naming conventions.
 Here is the signature for the function for computing the name of an aggregate
 interface:
 
-```
+```go
 func AggregateInterface(dev *DeviceParams, index int) (string, error)
 ```
 
@@ -26,10 +26,10 @@ parameters, provided in a `DeviceParams` struct. To compute the name of a
 Juniper PTX10008, for example, you would construct the following device
 parameters:
 
-```
+```go
 dev := &entname.DeviceParams{
-	Vendor: naming.JUNIPER,
-	HardwareModel: "PTX10008",
+    Vendor: naming.JUNIPER,
+    HardwareModel: "PTX10008",
 }
 ```
 
@@ -37,7 +37,7 @@ All index parameters accepted by the library are *zero-based indices*, even in
 cases where the vendor starts their numbering at 1 or later. For example, to
 compute the name of the first aggregate interface, use the call
 
-```
+```go
 aggName, err := AggregateInterface(dev, 0)
 ```
 
