@@ -28,7 +28,7 @@ type Namer struct {
 	HardwareModel string
 }
 
-// LoopbackInterface is an Arista implementation of namer.LoopbackInterface.
+// LoopbackInterface is an implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index int) (string, error) {
 	const maxIndex = 1000
 	if index > maxIndex {
@@ -37,7 +37,7 @@ func (n *Namer) LoopbackInterface(index int) (string, error) {
 	return fmt.Sprintf("Loopback%d", index), nil
 }
 
-// AggregateInterface is an Arista implementation of namer.AggregateInterface.
+// AggregateInterface is an implementation of namer.AggregateInterface.
 func (n *Namer) AggregateInterface(index int) (string, error) {
 	const maxIndex = 999998
 	if index > maxIndex {
@@ -46,12 +46,12 @@ func (n *Namer) AggregateInterface(index int) (string, error) {
 	return fmt.Sprintf("Port-Channel%d", index+1), nil
 }
 
-// AggregateMemberInterface is an Arista implementation of namer.AggregateMemberInterface.
+// AggregateMemberInterface is an implementation of namer.AggregateMemberInterface.
 func (n *Namer) AggregateMemberInterface(index int) (string, error) {
 	return n.AggregateInterface(index)
 }
 
-// Linecard is an Arista implementation of namer.Linecard.
+// Linecard is an implementation of namer.Linecard.
 func (n *Namer) Linecard(index int) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
@@ -60,7 +60,7 @@ func (n *Namer) Linecard(index int) (string, error) {
 	return fmt.Sprintf("Linecard%d", index+3), nil
 }
 
-// ControllerCard is an Arista implementation of namer.ControllerCard.
+// ControllerCard is an implementation of namer.ControllerCard.
 func (n *Namer) ControllerCard(index int) (string, error) {
 	const maxIndex = 1
 	if index > maxIndex {
@@ -69,7 +69,7 @@ func (n *Namer) ControllerCard(index int) (string, error) {
 	return fmt.Sprintf("Supervisor%d", index+1), nil
 }
 
-// Fabric is an Arista implementation of namer.Fabric.
+// Fabric is an implementation of namer.Fabric.
 func (n *Namer) Fabric(index int) (string, error) {
 	const maxIndex = 5
 	if index > maxIndex {
