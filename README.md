@@ -33,7 +33,7 @@ dev := &entname.DeviceParams{
 }
 ```
 
-All index parameters accepted by the library are *zero-based indices*, even in
+All index parameters accepted by the library are _zero-based_indices_, even in
 cases where the vendor starts their numbering at 1 or later. For example, to
 compute the name of the first aggregate interface, use the call
 
