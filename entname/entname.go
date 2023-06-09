@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package naming provides entity-naming functions.
-package naming
+// Package entname provides entity-naming functions.
+package entname
 
 import (
 	"fmt"

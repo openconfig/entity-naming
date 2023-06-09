@@ -27,7 +27,7 @@ Juniper PTX10008, for example, you would construct the following device
 parameters:
 
 ```
-dev := &naming.DeviceParams{
+dev := &entname.DeviceParams{
 	Vendor: naming.JUNIPER,
 	HardwareModel: "PTX10008",
 }
@@ -51,6 +51,6 @@ Contributions are more than welcome, specially from the vendors themselves.
 
 To add support for a new vendor, your PR should add a new value to the `Vendor`
 enum in
-[naming.go](https://github.com/openconfig/entity-naming/blob/main/naming.go)
+[entname.go](https://github.com/openconfig/entity-naming/blob/main/entname/entname.go)
 and add a new directory named for that vendor under
 [internal](https://github.com/openconfig/entity-naming/tree/main/internal).
