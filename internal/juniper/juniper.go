@@ -28,7 +28,7 @@ type Namer struct {
 	HardwareModel string
 }
 
-// LoopbackInterface is a Juniper implementation of namer.LoopbackInterface.
+// LoopbackInterface is an implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index int) (string, error) {
 	const maxIndex = 16000
 	if index > maxIndex {
@@ -37,7 +37,7 @@ func (n *Namer) LoopbackInterface(index int) (string, error) {
 	return fmt.Sprintf("lo0.%d", index), nil
 }
 
-// AggregateInterface is a Juniper implementation of namer.AggregateInterface.
+// AggregateInterface is an implementation of namer.AggregateInterface.
 func (n *Namer) AggregateInterface(index int) (string, error) {
 	const maxIndex = 1151
 	if index > maxIndex {
@@ -46,7 +46,7 @@ func (n *Namer) AggregateInterface(index int) (string, error) {
 	return fmt.Sprintf("ae%d", index), nil
 }
 
-// AggregateMemberInterface is a Juniper implementation of namer.AggregateMemberInterface.
+// AggregateMemberInterface is an implementation of namer.AggregateMemberInterface.
 func (n *Namer) AggregateMemberInterface(index int) (string, error) {
 	name, err := n.AggregateInterface(index)
 	if err != nil {
@@ -55,7 +55,7 @@ func (n *Namer) AggregateMemberInterface(index int) (string, error) {
 	return name + ".0", nil
 }
 
-// Linecard is a Juniper implementation of namer.Linecard.
+// Linecard is an implementation of namer.Linecard.
 func (n *Namer) Linecard(index int) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
@@ -64,7 +64,7 @@ func (n *Namer) Linecard(index int) (string, error) {
 	return fmt.Sprintf("FPC%d", index), nil
 }
 
-// ControllerCard is a Juniper implementation of namer.ControllerCard.
+// ControllerCard is an implementation of namer.ControllerCard.
 func (n *Namer) ControllerCard(index int) (string, error) {
 	const maxIndex = 1
 	if index > maxIndex {
@@ -73,7 +73,7 @@ func (n *Namer) ControllerCard(index int) (string, error) {
 	return fmt.Sprintf("RE%d", index), nil
 }
 
-// Fabric is a Juniper implementation of namer.Fabric.
+// Fabric is an implementation of namer.Fabric.
 func (n *Namer) Fabric(index int) (string, error) {
 	const maxIndex = 5
 	if index > maxIndex {

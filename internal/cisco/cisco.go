@@ -28,12 +28,12 @@ type Namer struct {
 	HardwareModel string
 }
 
-// LoopbackInterface is a Cisco implementation of namer.LoopbackInterface.
+// LoopbackInterface is an implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index int) (string, error) {
 	return fmt.Sprintf("Loopback%d", index), nil
 }
 
-// AggregateInterface is a Cisco implementation of namer.AggregateInterface.
+// AggregateInterface is an implementation of namer.AggregateInterface.
 func (n *Namer) AggregateInterface(index int) (string, error) {
 	const maxIndex = 65534
 	if index > maxIndex {
@@ -42,12 +42,12 @@ func (n *Namer) AggregateInterface(index int) (string, error) {
 	return fmt.Sprintf("Bundle-Ether%d", index+1), nil
 }
 
-// AggregateMemberInterface is a Cisco implementation of namer.AggregateMemberInterface.
+// AggregateMemberInterface is an implementation of namer.AggregateMemberInterface.
 func (n *Namer) AggregateMemberInterface(index int) (string, error) {
 	return n.AggregateInterface(index)
 }
 
-// Linecard is a Cisco implementation of namer.Linecard.
+// Linecard is an implementation of namer.Linecard.
 func (n *Namer) Linecard(index int) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
@@ -56,7 +56,7 @@ func (n *Namer) Linecard(index int) (string, error) {
 	return fmt.Sprintf("0/%d/CPU0", index), nil
 }
 
-// ControllerCard is a Cisco implementation of namer.ControllerCard.
+// ControllerCard is an implementation of namer.ControllerCard.
 func (n *Namer) ControllerCard(index int) (string, error) {
 	const maxIndex = 1
 	if index > maxIndex {
@@ -65,7 +65,7 @@ func (n *Namer) ControllerCard(index int) (string, error) {
 	return fmt.Sprintf("0/RP%d/CPU0", index), nil
 }
 
-// Fabric is a Cisco implementation of namer.Fabric.
+// Fabric is an implementation of namer.Fabric.
 func (n *Namer) Fabric(index int) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
