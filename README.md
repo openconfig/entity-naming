@@ -17,7 +17,7 @@ of the vendor-specific entity naming conventions.
 Here is the signature for the function for computing the name of an aggregate
 interface:
 
-```
+```go
 func AggregateInterface(dev *DeviceParams, index int) (string, error)
 ```
 
@@ -26,18 +26,18 @@ parameters, provided in a `DeviceParams` struct. To compute the name of a
 Juniper PTX10008, for example, you would construct the following device
 parameters:
 
-```
-dev := &naming.DeviceParams{
-	Vendor: naming.JUNIPER,
-	HardwareModel: "PTX10008",
+```go
+dev := &entname.DeviceParams{
+    Vendor: naming.JUNIPER,
+    HardwareModel: "PTX10008",
 }
 ```
 
-All index parameters accepted by the library are *zero-based indices*, even in
+All index parameters accepted by the library are _zero-based_indices_, even in
 cases where the vendor starts their numbering at 1 or later. For example, to
 compute the name of the first aggregate interface, use the call
 
-```
+```go
 aggName, err := AggregateInterface(dev, 0)
 ```
 
@@ -51,6 +51,6 @@ Contributions are more than welcome, specially from the vendors themselves.
 
 To add support for a new vendor, your PR should add a new value to the `Vendor`
 enum in
-[naming.go](https://github.com/openconfig/entity-naming/blob/main/naming.go)
+[entname.go](https://github.com/openconfig/entity-naming/blob/main/entname/entname.go)
 and add a new directory named for that vendor under
 [internal](https://github.com/openconfig/entity-naming/tree/main/internal).
