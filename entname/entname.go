@@ -51,6 +51,9 @@ type DeviceParams struct {
 }
 
 func (dp *DeviceParams) String() string {
+	if dp == nil {
+		return "nil"
+	}
 	return fmt.Sprintf("%+v", *dp)
 }
 
@@ -76,6 +79,9 @@ type PortParams struct {
 }
 
 func (pp *PortParams) String() string {
+	if pp == nil {
+		return "nil"
+	}
 	return fmt.Sprintf("%+v", *pp)
 }
 
@@ -133,25 +139,20 @@ func Port(dp *DeviceParams, pp *PortParams) (string, error) {
 }
 
 func namerPortParams(pp *PortParams, fixedFormFactor bool) (*namer.PortParams, error) {
-	if pp.SlotIndex < 0 {
+	switch {
+	case pp.SlotIndex < 0:
 		return nil, fmt.Errorf("slot index cannot be negative: %d", pp.SlotIndex)
-	}
-	if pp.PICIndex < 0 {
+	case pp.PICIndex < 0:
 		return nil, fmt.Errorf("pic index cannot be negative: %d", pp.PICIndex)
-	}
-	if pp.PortIndex < 0 {
+	case pp.PortIndex < 0:
 		return nil, fmt.Errorf("port index cannot be negative: %d", pp.PortIndex)
-	}
-	if pp.ChannelIndex < 0 {
+	case pp.ChannelIndex < 0:
 		return nil, fmt.Errorf("channel index cannot be negative: %d", pp.ChannelIndex)
-	}
-	if pp.SlotIndex > 0 && fixedFormFactor {
+	case pp.SlotIndex > 0 && fixedFormFactor:
 		return nil, fmt.Errorf("cannot have a non-zero slot index on a fixed form factor device")
-	}
-	if pp.ChannelIndex > 0 && pp.ChannelState != Channelized {
+	case pp.ChannelIndex > 0 && pp.ChannelState != Channelized:
 		return nil, fmt.Errorf("cannot have a non-zero channel index with an unchannelized port")
-	}
-	if pp.Speed == oc.IfEthernet_ETHERNET_SPEED_UNSET || pp.Speed == oc.IfEthernet_ETHERNET_SPEED_SPEED_UNKNOWN {
+	case pp.Speed == oc.IfEthernet_ETHERNET_SPEED_UNSET || pp.Speed == oc.IfEthernet_ETHERNET_SPEED_SPEED_UNKNOWN:
 		return nil, fmt.Errorf("port speed cannot be unset or unknown")
 	}
 	npp := &namer.PortParams{
