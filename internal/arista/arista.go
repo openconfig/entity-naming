@@ -17,6 +17,7 @@ package arista
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/openconfig/entity-naming/internal/namer"
@@ -86,11 +87,14 @@ func (n *Namer) Port(pp *namer.PortParams) (string, error) {
 	if pp.SlotIndex != nil {
 		nameBuilder.WriteString(fmt.Sprintf("%d/", (*pp.SlotIndex)+3))
 	}
-	nameBuilder.WriteString(fmt.Sprintf("%d/", pp.PortIndex))
-	if pp.ChannelIndex == nil {
-		nameBuilder.WriteString("1")
-	} else {
-		nameBuilder.WriteString(fmt.Sprintf("%d", *pp.ChannelIndex))
+	nameBuilder.WriteString(fmt.Sprintf("%d", pp.PortIndex))
+	if pp.Channelizable {
+		nameBuilder.WriteString("/")
+		if pp.ChannelIndex == nil {
+			nameBuilder.WriteString("1")
+		} else {
+			nameBuilder.WriteString(strconv.Itoa(*pp.ChannelIndex))
+		}
 	}
 	return nameBuilder.String(), nil
 }

@@ -133,35 +133,39 @@ func TestPort(t *testing.T) {
 		pp   *namer.PortParams
 		want string
 	}{{
-		desc: "standard",
+		desc: "channelizable",
 		pp: &namer.PortParams{
-			SlotIndex: intPtr(1),
-			PICIndex:  2,
-			PortIndex: 3,
+			SlotIndex:     intPtr(1),
+			PICIndex:      2,
+			PortIndex:     3,
+			Channelizable: true,
 		},
 		want: "et-1/0/3",
 	}, {
 		desc: "channelized",
 		pp: &namer.PortParams{
-			SlotIndex:    intPtr(1),
-			PICIndex:     2,
-			PortIndex:    3,
-			ChannelIndex: intPtr(4),
+			SlotIndex:     intPtr(1),
+			PICIndex:      2,
+			PortIndex:     3,
+			ChannelIndex:  intPtr(4),
+			Channelizable: true,
 		},
 		want: "et-1/0/3:4",
 	}, {
-		desc: "fixed form factor",
+		desc: "fixed form factor - channelizable",
 		pp: &namer.PortParams{
-			PICIndex:  2,
-			PortIndex: 3,
+			PICIndex:      2,
+			PortIndex:     3,
+			Channelizable: true,
 		},
 		want: "et-0/2/3",
 	}, {
-		desc: "channelized fixed form factor",
+		desc: "fixed form factor - channelized",
 		pp: &namer.PortParams{
-			PICIndex:     2,
-			PortIndex:    3,
-			ChannelIndex: intPtr(4),
+			PICIndex:      2,
+			PortIndex:     3,
+			ChannelIndex:  intPtr(4),
+			Channelizable: true,
 		},
 		want: "et-0/2/3:4",
 	}}
@@ -176,6 +180,18 @@ func TestPort(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("unchannelizable", func(t *testing.T) {
+		pp := &namer.PortParams{
+			SlotIndex: intPtr(1),
+			PICIndex:  2,
+			PortIndex: 3,
+		}
+		if _, err := jn.Port(pp); err == nil || !strings.Contains(err.Error(), "unchannelizable") {
+			t.Fatalf("Port(%v) got unexpected error %v, want substring 'unchannelizable'", pp, err)
+		}
+
+	})
 }
 
 func TestLinecard(t *testing.T) {

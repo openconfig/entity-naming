@@ -127,7 +127,7 @@ func TestPort(t *testing.T) {
 		pp   *namer.PortParams
 		want string
 	}{{
-		desc: "10G",
+		desc: "unchannelizable",
 		pp: &namer.PortParams{
 			SlotIndex: intPtr(1),
 			PortIndex: 3,
@@ -135,45 +135,47 @@ func TestPort(t *testing.T) {
 		},
 		want: "TenGigE0/1/0/3",
 	}, {
-		desc: "100G",
+		desc: "channelizable",
 		pp: &namer.PortParams{
-			SlotIndex: intPtr(1),
-			PortIndex: 3,
-			Speed:     oc.IfEthernet_ETHERNET_SPEED_SPEED_100GB,
+			SlotIndex:     intPtr(1),
+			PortIndex:     3,
+			Speed:         oc.IfEthernet_ETHERNET_SPEED_SPEED_100GB,
+			Channelizable: true,
 		},
 		want: "HundredGigE0/1/0/3",
-	}, {
-		desc: "400G",
-		pp: &namer.PortParams{
-			SlotIndex: intPtr(1),
-			PortIndex: 3,
-			Speed:     oc.IfEthernet_ETHERNET_SPEED_SPEED_400GB,
-		},
-		want: "FourHundredGigE0/1/0/3",
 	}, {
 		desc: "channelized",
 		pp: &namer.PortParams{
 			SlotIndex:    intPtr(1),
 			PortIndex:    3,
 			ChannelIndex: intPtr(4),
-			Speed:        oc.IfEthernet_ETHERNET_SPEED_SPEED_10GB,
+			Speed:        oc.IfEthernet_ETHERNET_SPEED_SPEED_400GB,
 		},
-		want: "TenGigE0/1/0/3/4",
+		want: "FourHundredGigE0/1/0/3/4",
 	}, {
-		desc: "fixed form factor",
+		desc: "fixed form factor - unchannelizable",
 		pp: &namer.PortParams{
 			PortIndex: 3,
 			Speed:     oc.IfEthernet_ETHERNET_SPEED_SPEED_10GB,
 		},
 		want: "TenGigE0/0/0/3",
 	}, {
+		desc: "fixed form factor - channelizable",
+		pp: &namer.PortParams{
+			PortIndex:     3,
+			Speed:         oc.IfEthernet_ETHERNET_SPEED_SPEED_100GB,
+			Channelizable: true,
+		},
+		want: "HundredGigE0/0/0/3",
+	}, {
 		desc: "channelized fixed form factor",
 		pp: &namer.PortParams{
-			PortIndex:    3,
-			ChannelIndex: intPtr(4),
-			Speed:        oc.IfEthernet_ETHERNET_SPEED_SPEED_10GB,
+			PortIndex:     3,
+			ChannelIndex:  intPtr(4),
+			Speed:         oc.IfEthernet_ETHERNET_SPEED_SPEED_400GB,
+			Channelizable: true,
 		},
-		want: "TenGigE0/0/0/3/4",
+		want: "FourHundredGigE0/0/0/3/4",
 	}}
 	for _, test := range tests {
 		t.Run(test.desc, func(t *testing.T) {

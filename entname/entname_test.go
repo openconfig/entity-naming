@@ -334,6 +334,11 @@ func TestPort(t *testing.T) {
 		portParams: &PortParams{ChannelIndex: 1, Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB},
 		fixedForm:  true,
 		wantErr:    "non-zero channel",
+	}, {
+		desc:       "non-zero channel on unchannelizable port",
+		portParams: &PortParams{ChannelIndex: 1, ChannelState: Unchannelizable, Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB},
+		fixedForm:  true,
+		wantErr:    "non-zero channel",
 	}}
 	for _, test := range badParamsTests {
 		t.Run(test.desc, func(t *testing.T) {

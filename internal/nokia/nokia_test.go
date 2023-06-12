@@ -133,31 +133,48 @@ func TestPort(t *testing.T) {
 		pp   *namer.PortParams
 		want string
 	}{{
-		desc: "standard",
+		desc: "unchannelizable",
 		pp: &namer.PortParams{
 			SlotIndex: intPtr(1),
 			PortIndex: 3,
 		},
 		want: "et-2/4",
 	}, {
+		desc: "channelizable",
+		pp: &namer.PortParams{
+			SlotIndex:     intPtr(1),
+			PortIndex:     3,
+			Channelizable: true,
+		},
+		want: "et-2/4",
+	}, {
 		desc: "channelized",
 		pp: &namer.PortParams{
-			SlotIndex:    intPtr(1),
-			PortIndex:    3,
-			ChannelIndex: intPtr(4),
+			SlotIndex:     intPtr(1),
+			PortIndex:     3,
+			ChannelIndex:  intPtr(4),
+			Channelizable: true,
 		},
 		want: "et-2/4/5",
 	}, {
-		desc: "fixed form factor",
+		desc: "fixed form factor - unchannelizable",
 		pp: &namer.PortParams{
 			PortIndex: 3,
 		},
 		want: "et-1/4",
 	}, {
-		desc: "channelized fixed form factor",
+		desc: "fixed form factor - channelizable",
 		pp: &namer.PortParams{
-			PortIndex:    3,
-			ChannelIndex: intPtr(4),
+			PortIndex:     3,
+			Channelizable: true,
+		},
+		want: "et-1/4",
+	}, {
+		desc: "fixed form factor - channelized",
+		pp: &namer.PortParams{
+			PortIndex:     3,
+			Channelizable: true,
+			ChannelIndex:  intPtr(4),
 		},
 		want: "et-1/4/5",
 	}}

@@ -75,6 +75,8 @@ type PortParams struct {
 	// ChannelIndex is the zero-based index of the channel within the Port.
 	// This value is nil for unchannelized ports.
 	ChannelIndex *int
+	// Channelizable indicates whether the port can be channelized.
+	Channelizable bool
 	// Speed is the ethernet link speed of the port.
 	Speed oc.E_IfEthernet_ETHERNET_SPEED
 }

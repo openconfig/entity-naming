@@ -85,6 +85,10 @@ func (n *Namer) Fabric(index int) (string, error) {
 
 // Port is a Juniper implementation of namer.Port.
 func (n *Namer) Port(pp *namer.PortParams) (string, error) {
+	if !pp.Channelizable {
+		return "", fmt.Errorf("Juniper does not support unchannelizable ports")
+	}
+
 	var nameBuilder strings.Builder
 	nameBuilder.WriteString("et-")
 	if pp.SlotIndex == nil {

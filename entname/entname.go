@@ -54,12 +54,24 @@ func (dp *DeviceParams) String() string {
 	return fmt.Sprintf("%+v", *dp)
 }
 
+// PortChannelState indicates whether the port is channelized and channelizable.
+type PortChannelState int
+
+const (
+	// Unchannelized means the port can be channelized but is not.
+	Unchannelized PortChannelState = iota
+	// Channelized means the port is channelized.
+	Channelized
+	// Unchannelizable means the port cannot be channelized.
+	Unchannelizable
+)
+
 // PortParams are parameters of a network port.
 //
 //go:generate ./oc/generate.sh
 type PortParams struct {
 	SlotIndex, PICIndex, PortIndex, ChannelIndex int
-	Channelized                                  bool
+	ChannelState                                 PortChannelState
 	Speed                                        oc.E_IfEthernet_ETHERNET_SPEED
 }
 
@@ -136,21 +148,22 @@ func namerPortParams(pp *PortParams, fixedFormFactor bool) (*namer.PortParams, e
 	if pp.SlotIndex > 0 && fixedFormFactor {
 		return nil, fmt.Errorf("cannot have a non-zero slot index on a fixed form factor device")
 	}
-	if pp.ChannelIndex > 0 && !pp.Channelized {
+	if pp.ChannelIndex > 0 && pp.ChannelState != Channelized {
 		return nil, fmt.Errorf("cannot have a non-zero channel index with an unchannelized port")
 	}
 	if pp.Speed == oc.IfEthernet_ETHERNET_SPEED_UNSET || pp.Speed == oc.IfEthernet_ETHERNET_SPEED_SPEED_UNKNOWN {
 		return nil, fmt.Errorf("port speed cannot be unset or unknown")
 	}
 	npp := &namer.PortParams{
-		PICIndex:  pp.PICIndex,
-		PortIndex: pp.PortIndex,
-		Speed:     pp.Speed,
+		PICIndex:      pp.PICIndex,
+		PortIndex:     pp.PortIndex,
+		Speed:         pp.Speed,
+		Channelizable: pp.ChannelState != Unchannelizable,
 	}
 	if !fixedFormFactor {
 		npp.SlotIndex = &pp.SlotIndex
 	}
-	if pp.Channelized {
+	if pp.ChannelState == Channelized {
 		npp.ChannelIndex = &pp.ChannelIndex
 	}
 	return npp, nil
