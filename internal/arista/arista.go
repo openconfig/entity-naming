@@ -17,6 +17,7 @@ package arista
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/openconfig/entity-naming/internal/namer"
 )
@@ -76,4 +77,28 @@ func (n *Namer) Fabric(index int) (string, error) {
 		return "", fmt.Errorf("Arista fabric index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("Fabric%d", index+1), nil
+}
+
+// Port is an Arista implementation of namer.Port.
+func (n *Namer) Port(pp *namer.PortParams) (string, error) {
+	var nameBuilder strings.Builder
+	nameBuilder.WriteString("Ethernet")
+	if pp.SlotIndex != nil {
+		nameBuilder.WriteString(fmt.Sprintf("%d/", (*pp.SlotIndex)+3))
+	}
+	nameBuilder.WriteString(fmt.Sprintf("%d", pp.PortIndex))
+	if pp.Channelizable {
+		if pp.ChannelIndex == nil {
+			nameBuilder.WriteString("/1")
+		} else {
+			nameBuilder.WriteString(fmt.Sprintf("/%d", *pp.ChannelIndex))
+		}
+	}
+	return nameBuilder.String(), nil
+}
+
+// IsFixedFormFactor is an Arista implementation of namer.IsFixedFormFactor.
+func (n *Namer) IsFixedFormFactor() bool {
+	// TODO(arista): Fill in this implementation.
+	return false
 }

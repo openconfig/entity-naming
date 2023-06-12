@@ -17,6 +17,8 @@ package nokia
 import (
 	"strings"
 	"testing"
+
+	"github.com/openconfig/entity-naming/internal/namer"
 )
 
 var nn = new(Namer)
@@ -121,6 +123,72 @@ func TestAggregateMemberInterface(t *testing.T) {
 			t.Fatalf("AggregateMemberInterface(128) got error %v, want substring %q", err, wantErr)
 		}
 	})
+}
+
+func TestPort(t *testing.T) {
+	intPtr := func(i int) *int { return &i }
+
+	tests := []struct {
+		desc string
+		pp   *namer.PortParams
+		want string
+	}{{
+		desc: "unchannelizable",
+		pp: &namer.PortParams{
+			SlotIndex: intPtr(1),
+			PortIndex: 3,
+		},
+		want: "et-2/4",
+	}, {
+		desc: "channelizable",
+		pp: &namer.PortParams{
+			SlotIndex:     intPtr(1),
+			PortIndex:     3,
+			Channelizable: true,
+		},
+		want: "et-2/4",
+	}, {
+		desc: "channelized",
+		pp: &namer.PortParams{
+			SlotIndex:     intPtr(1),
+			PortIndex:     3,
+			ChannelIndex:  intPtr(4),
+			Channelizable: true,
+		},
+		want: "et-2/4/5",
+	}, {
+		desc: "fixed form factor - unchannelizable",
+		pp: &namer.PortParams{
+			PortIndex: 3,
+		},
+		want: "et-1/4",
+	}, {
+		desc: "fixed form factor - channelizable",
+		pp: &namer.PortParams{
+			PortIndex:     3,
+			Channelizable: true,
+		},
+		want: "et-1/4",
+	}, {
+		desc: "fixed form factor - channelized",
+		pp: &namer.PortParams{
+			PortIndex:     3,
+			Channelizable: true,
+			ChannelIndex:  intPtr(4),
+		},
+		want: "et-1/4/5",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := nn.Port(test.pp)
+			if err != nil {
+				t.Fatalf("Port(%v) got error: %v", test.pp, err)
+			}
+			if got != test.want {
+				t.Errorf("Port(%v) got %q, want %q", test.pp, got, test.want)
+			}
+		})
+	}
 }
 
 func TestLinecard(t *testing.T) {

@@ -23,6 +23,7 @@ import (
 	"github.com/openconfig/entity-naming/internal/juniper"
 	"github.com/openconfig/entity-naming/internal/namer"
 	"github.com/openconfig/entity-naming/internal/nokia"
+	"github.com/openconfig/entity-naming/oc"
 )
 
 // Vendor is an enum of network device suppliers.
@@ -47,6 +48,41 @@ var namerFactories = map[Vendor]func(string) namer.Namer{
 type DeviceParams struct {
 	Vendor        Vendor
 	HardwareModel string
+}
+
+func (dp *DeviceParams) String() string {
+	if dp == nil {
+		return "nil"
+	}
+	return fmt.Sprintf("%+v", *dp)
+}
+
+// PortChannelState indicates whether the port is channelized and channelizable.
+type PortChannelState int
+
+const (
+	// Unchannelized means the port can be channelized but is not.
+	Unchannelized PortChannelState = iota
+	// Channelized means the port is channelized.
+	Channelized
+	// Unchannelizable means the port cannot be channelized.
+	Unchannelizable
+)
+
+// PortParams are parameters of a network port.
+//
+//go:generate ./oc/generate.sh
+type PortParams struct {
+	SlotIndex, PICIndex, PortIndex, ChannelIndex int
+	ChannelState                                 PortChannelState
+	Speed                                        oc.E_IfEthernet_ETHERNET_SPEED
+}
+
+func (pp *PortParams) String() string {
+	if pp == nil {
+		return "nil"
+	}
+	return fmt.Sprintf("%+v", *pp)
 }
 
 // LoopbackInterface returns the vendor-specific name of the loopback
@@ -86,6 +122,52 @@ func AggregateMemberInterface(dp *DeviceParams, index int) (string, error) {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
 	return namer.AggregateMemberInterface(index)
+}
+
+// Port returns the vendor-specific name of the physical interface with the
+// given port parameters.
+func Port(dp *DeviceParams, pp *PortParams) (string, error) {
+	namer, err := lookupNamer(dp)
+	if err != nil {
+		return "", err
+	}
+	npp, err := namerPortParams(pp, namer.IsFixedFormFactor())
+	if err != nil {
+		return "", err
+	}
+	return namer.Port(npp)
+}
+
+func namerPortParams(pp *PortParams, fixedFormFactor bool) (*namer.PortParams, error) {
+	switch {
+	case pp.SlotIndex < 0:
+		return nil, fmt.Errorf("slot index cannot be negative: %d", pp.SlotIndex)
+	case pp.PICIndex < 0:
+		return nil, fmt.Errorf("pic index cannot be negative: %d", pp.PICIndex)
+	case pp.PortIndex < 0:
+		return nil, fmt.Errorf("port index cannot be negative: %d", pp.PortIndex)
+	case pp.ChannelIndex < 0:
+		return nil, fmt.Errorf("channel index cannot be negative: %d", pp.ChannelIndex)
+	case pp.SlotIndex > 0 && fixedFormFactor:
+		return nil, fmt.Errorf("cannot have a non-zero slot index on a fixed form factor device")
+	case pp.ChannelIndex > 0 && pp.ChannelState != Channelized:
+		return nil, fmt.Errorf("cannot have a non-zero channel index with an unchannelized port")
+	case pp.Speed == oc.IfEthernet_ETHERNET_SPEED_UNSET || pp.Speed == oc.IfEthernet_ETHERNET_SPEED_SPEED_UNKNOWN:
+		return nil, fmt.Errorf("port speed cannot be unset or unknown")
+	}
+	npp := &namer.PortParams{
+		PICIndex:      pp.PICIndex,
+		PortIndex:     pp.PortIndex,
+		Speed:         pp.Speed,
+		Channelizable: pp.ChannelState != Unchannelizable,
+	}
+	if !fixedFormFactor {
+		npp.SlotIndex = &pp.SlotIndex
+	}
+	if pp.ChannelState == Channelized {
+		npp.ChannelIndex = &pp.ChannelIndex
+	}
+	return npp, nil
 }
 
 // Linecard returns the vendor-specific name of the linecard with the given

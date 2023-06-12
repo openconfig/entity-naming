@@ -17,6 +17,9 @@ package cisco
 import (
 	"strings"
 	"testing"
+
+	"github.com/openconfig/entity-naming/internal/namer"
+	"github.com/openconfig/entity-naming/oc"
 )
 
 var cn = new(Namer)
@@ -114,6 +117,77 @@ func TestAggregateMemberInterface(t *testing.T) {
 			t.Fatalf("AggregateMemberInterface(65535) got error %v, want substring %q", err, wantErr)
 		}
 	})
+}
+
+func TestPort(t *testing.T) {
+	intPtr := func(i int) *int { return &i }
+
+	tests := []struct {
+		desc string
+		pp   *namer.PortParams
+		want string
+	}{{
+		desc: "unchannelizable",
+		pp: &namer.PortParams{
+			SlotIndex: intPtr(1),
+			PortIndex: 3,
+			Speed:     oc.IfEthernet_ETHERNET_SPEED_SPEED_10GB,
+		},
+		want: "TenGigE0/1/0/3",
+	}, {
+		desc: "channelizable",
+		pp: &namer.PortParams{
+			SlotIndex:     intPtr(1),
+			PortIndex:     3,
+			Speed:         oc.IfEthernet_ETHERNET_SPEED_SPEED_100GB,
+			Channelizable: true,
+		},
+		want: "HundredGigE0/1/0/3",
+	}, {
+		desc: "channelized",
+		pp: &namer.PortParams{
+			SlotIndex:    intPtr(1),
+			PortIndex:    3,
+			ChannelIndex: intPtr(4),
+			Speed:        oc.IfEthernet_ETHERNET_SPEED_SPEED_400GB,
+		},
+		want: "FourHundredGigE0/1/0/3/4",
+	}, {
+		desc: "fixed form factor - unchannelizable",
+		pp: &namer.PortParams{
+			PortIndex: 3,
+			Speed:     oc.IfEthernet_ETHERNET_SPEED_SPEED_10GB,
+		},
+		want: "TenGigE0/0/0/3",
+	}, {
+		desc: "fixed form factor - channelizable",
+		pp: &namer.PortParams{
+			PortIndex:     3,
+			Speed:         oc.IfEthernet_ETHERNET_SPEED_SPEED_100GB,
+			Channelizable: true,
+		},
+		want: "HundredGigE0/0/0/3",
+	}, {
+		desc: "channelized fixed form factor",
+		pp: &namer.PortParams{
+			PortIndex:     3,
+			ChannelIndex:  intPtr(4),
+			Speed:         oc.IfEthernet_ETHERNET_SPEED_SPEED_400GB,
+			Channelizable: true,
+		},
+		want: "FourHundredGigE0/0/0/3/4",
+	}}
+	for _, test := range tests {
+		t.Run(test.desc, func(t *testing.T) {
+			got, err := cn.Port(test.pp)
+			if err != nil {
+				t.Fatalf("Port(%v) got error: %v", test.pp, err)
+			}
+			if got != test.want {
+				t.Errorf("Port(%v) got %q, want %q", test.pp, got, test.want)
+			}
+		})
+	}
 }
 
 func TestLinecard(t *testing.T) {

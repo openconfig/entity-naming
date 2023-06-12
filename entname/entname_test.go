@@ -20,6 +20,7 @@ import (
 	"testing"
 
 	"github.com/openconfig/entity-naming/internal/namer"
+	"github.com/openconfig/entity-naming/oc"
 )
 
 const fakeVendor = Vendor("fake")
@@ -247,6 +248,116 @@ func TestFabric(t *testing.T) {
 	})
 }
 
+func TestPort(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		const want = "fakePort"
+		setFakeNamer(&fakeNamer{
+			PortFn: func(*namer.PortParams) (string, error) {
+				return want, nil
+			},
+			IsFixedFormFactorFn: func() bool {
+				return false
+			},
+		})
+		got, err := Port(devParams, &PortParams{Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB})
+		if err != nil {
+			t.Errorf("Port(%v,{}) got error %v", devParams, err)
+		}
+		if got != want {
+			t.Errorf("Port(%v,{}) got %q, want %q", devParams, got, want)
+		}
+	})
+
+	t.Run("success - fixed form factor", func(t *testing.T) {
+		const want = "fakePortFFF"
+		setFakeNamer(&fakeNamer{
+			PortFn: func(*namer.PortParams) (string, error) {
+				return want, nil
+			},
+			IsFixedFormFactorFn: func() bool {
+				return true
+			},
+		})
+		got, err := Port(devParams, &PortParams{Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB})
+		if err != nil {
+			t.Errorf("Port(%v,{}) got error %v", devParams, err)
+		}
+		if got != want {
+			t.Errorf("Port(%v,{}) got %q, want %q", devParams, got, want)
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		const wantErr = "PortErr"
+		setFakeNamer(&fakeNamer{
+			PortFn: func(*namer.PortParams) (string, error) {
+				return "", errors.New(wantErr)
+			},
+			IsFixedFormFactorFn: func() bool {
+				return false
+			},
+		})
+		_, err := Port(devParams, &PortParams{Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB})
+		if err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("Port(%v,{}) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+
+	badParamsTests := []struct {
+		desc       string
+		portParams *PortParams
+		fixedForm  bool
+		wantErr    string
+	}{{
+		desc:       "negative slot",
+		portParams: &PortParams{SlotIndex: -1, Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB},
+		wantErr:    "slot",
+	}, {
+		desc:       "negative pic",
+		portParams: &PortParams{PICIndex: -2, Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB},
+		wantErr:    "pic",
+	}, {
+		desc:       "negative port",
+		portParams: &PortParams{PortIndex: -3, Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB},
+		wantErr:    "port",
+	}, {
+		desc:       "negative channel",
+		portParams: &PortParams{ChannelIndex: -4, Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB},
+		wantErr:    "channel",
+	}, {
+		desc:       "non-zero slot on fixed form factor",
+		portParams: &PortParams{SlotIndex: 1, Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB},
+		fixedForm:  true,
+		wantErr:    "non-zero slot",
+	}, {
+		desc:       "non-zero channel on unchannelized port",
+		portParams: &PortParams{ChannelIndex: 1, Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB},
+		fixedForm:  true,
+		wantErr:    "non-zero channel",
+	}, {
+		desc:       "non-zero channel on unchannelizable port",
+		portParams: &PortParams{ChannelIndex: 1, ChannelState: Unchannelizable, Speed: oc.IfEthernet_ETHERNET_SPEED_SPEED_1GB},
+		fixedForm:  true,
+		wantErr:    "non-zero channel",
+	}}
+	for _, test := range badParamsTests {
+		t.Run(test.desc, func(t *testing.T) {
+			setFakeNamer(&fakeNamer{
+				PortFn: func(*namer.PortParams) (string, error) {
+					return "fakePort", nil
+				},
+				IsFixedFormFactorFn: func() bool {
+					return test.fixedForm
+				},
+			})
+			_, err := Port(devParams, test.portParams)
+			if err == nil || !strings.Contains(err.Error(), test.wantErr) {
+				t.Errorf("Port(%v,{}) got error %v, want substring %q", devParams, err, test.wantErr)
+			}
+		})
+	}
+}
+
 func setFakeNamer(fn *fakeNamer) {
 	namerFactories[fakeVendor] = func(string) namer.Namer { return fn }
 }
@@ -256,6 +367,8 @@ var _ namer.Namer = (*fakeNamer)(nil)
 type fakeNamer struct {
 	LoopbackInterfaceFn, AggregateInterfaceFn, AggregateMemberInterfaceFn,
 	LinecardFn, ControllerCardFn, FabricFn func(int) (string, error)
+	PortFn              func(*namer.PortParams) (string, error)
+	IsFixedFormFactorFn func() bool
 }
 
 func (fn *fakeNamer) LoopbackInterface(index int) (string, error) {
@@ -280,4 +393,12 @@ func (fn *fakeNamer) ControllerCard(index int) (string, error) {
 
 func (fn *fakeNamer) Fabric(index int) (string, error) {
 	return fn.FabricFn(index)
+}
+
+func (fn *fakeNamer) Port(pp *namer.PortParams) (string, error) {
+	return fn.PortFn(pp)
+}
+
+func (fn *fakeNamer) IsFixedFormFactor() bool {
+	return fn.IsFixedFormFactorFn()
 }
