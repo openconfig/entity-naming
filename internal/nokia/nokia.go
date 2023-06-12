@@ -30,7 +30,7 @@ type Namer struct {
 }
 
 // LoopbackInterface is an implementation of namer.LoopbackInterface.
-func (n *Namer) LoopbackInterface(index int) (string, error) {
+func (n *Namer) LoopbackInterface(index uint) (string, error) {
 	const maxIndex = 255
 	if index > maxIndex {
 		return "", fmt.Errorf("Nokia loopback index cannot exceed %d, got %d", maxIndex, index)
@@ -39,7 +39,7 @@ func (n *Namer) LoopbackInterface(index int) (string, error) {
 }
 
 // AggregateInterface is an implementation of namer.AggregateInterface.
-func (n *Namer) AggregateInterface(index int) (string, error) {
+func (n *Namer) AggregateInterface(index uint) (string, error) {
 	const maxIndex = 127
 	if index > maxIndex {
 		return "", fmt.Errorf("Nokia aggregate index cannot exceed %d, got %d", maxIndex, index)
@@ -48,7 +48,7 @@ func (n *Namer) AggregateInterface(index int) (string, error) {
 }
 
 // AggregateMemberInterface is an implementation of namer.AggregateMemberInterface.
-func (n *Namer) AggregateMemberInterface(index int) (string, error) {
+func (n *Namer) AggregateMemberInterface(index uint) (string, error) {
 	name, err := n.AggregateInterface(index)
 	if err != nil {
 		return "", err
@@ -57,7 +57,7 @@ func (n *Namer) AggregateMemberInterface(index int) (string, error) {
 }
 
 // Linecard is an implementation of namer.Linecard.
-func (n *Namer) Linecard(index int) (string, error) {
+func (n *Namer) Linecard(index uint) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
 		return "", fmt.Errorf("Nokia linecard index cannot exceed %d, got %d", maxIndex, index)
@@ -66,7 +66,7 @@ func (n *Namer) Linecard(index int) (string, error) {
 }
 
 // ControllerCard is an implementation of namer.ControllerCard.
-func (n *Namer) ControllerCard(index int) (string, error) {
+func (n *Namer) ControllerCard(index uint) (string, error) {
 	const maxIndex = 1
 	if index > maxIndex {
 		return "", fmt.Errorf("Nokia controller card index cannot exceed %d, got %d", maxIndex, index)
@@ -75,7 +75,7 @@ func (n *Namer) ControllerCard(index int) (string, error) {
 }
 
 // Fabric is an implementation of namer.Fabric.
-func (n *Namer) Fabric(index int) (string, error) {
+func (n *Namer) Fabric(index uint) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
 		return "", fmt.Errorf("Nokia fabric index cannot exceed %d, got %d", maxIndex, index)

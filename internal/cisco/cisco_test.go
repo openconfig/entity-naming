@@ -27,7 +27,7 @@ var cn = new(Namer)
 func TestLoopbackInterface(t *testing.T) {
 	tests := []struct {
 		desc  string
-		index int
+		index uint
 		want  string
 	}{{
 		desc:  "zero",
@@ -54,7 +54,7 @@ func TestLoopbackInterface(t *testing.T) {
 func TestAggregateInterface(t *testing.T) {
 	tests := []struct {
 		desc  string
-		index int
+		index uint
 		want  string
 	}{{
 		desc:  "min",
@@ -88,7 +88,7 @@ func TestAggregateInterface(t *testing.T) {
 func TestAggregateMemberInterface(t *testing.T) {
 	tests := []struct {
 		desc  string
-		index int
+		index uint
 		want  string
 	}{{
 		desc:  "min",
@@ -120,7 +120,7 @@ func TestAggregateMemberInterface(t *testing.T) {
 }
 
 func TestPort(t *testing.T) {
-	intPtr := func(i int) *int { return &i }
+	uintPtr := func(i uint) *uint { return &i }
 
 	tests := []struct {
 		desc string
@@ -129,7 +129,7 @@ func TestPort(t *testing.T) {
 	}{{
 		desc: "unchannelizable",
 		pp: &namer.PortParams{
-			SlotIndex: intPtr(1),
+			SlotIndex: uintPtr(1),
 			PortIndex: 3,
 			Speed:     oc.IfEthernet_ETHERNET_SPEED_SPEED_10GB,
 		},
@@ -137,7 +137,7 @@ func TestPort(t *testing.T) {
 	}, {
 		desc: "channelizable",
 		pp: &namer.PortParams{
-			SlotIndex:     intPtr(1),
+			SlotIndex:     uintPtr(1),
 			PortIndex:     3,
 			Speed:         oc.IfEthernet_ETHERNET_SPEED_SPEED_100GB,
 			Channelizable: true,
@@ -146,9 +146,9 @@ func TestPort(t *testing.T) {
 	}, {
 		desc: "channelized",
 		pp: &namer.PortParams{
-			SlotIndex:    intPtr(1),
+			SlotIndex:    uintPtr(1),
 			PortIndex:    3,
-			ChannelIndex: intPtr(4),
+			ChannelIndex: uintPtr(4),
 			Speed:        oc.IfEthernet_ETHERNET_SPEED_SPEED_400GB,
 		},
 		want: "FourHundredGigE0/1/0/3/4",
@@ -171,7 +171,7 @@ func TestPort(t *testing.T) {
 		desc: "channelized fixed form factor",
 		pp: &namer.PortParams{
 			PortIndex:     3,
-			ChannelIndex:  intPtr(4),
+			ChannelIndex:  uintPtr(4),
 			Speed:         oc.IfEthernet_ETHERNET_SPEED_SPEED_400GB,
 			Channelizable: true,
 		},
@@ -193,7 +193,7 @@ func TestPort(t *testing.T) {
 func TestLinecard(t *testing.T) {
 	tests := []struct {
 		desc  string
-		index int
+		index uint
 		want  string
 	}{{
 		desc:  "min",
@@ -227,7 +227,7 @@ func TestLinecard(t *testing.T) {
 func TestControllerCard(t *testing.T) {
 	tests := []struct {
 		desc  string
-		index int
+		index uint
 		want  string
 	}{{
 		desc:  "min",
@@ -261,7 +261,7 @@ func TestControllerCard(t *testing.T) {
 func TestFabric(t *testing.T) {
 	tests := []struct {
 		desc  string
-		index int
+		index uint
 		want  string
 	}{{
 		desc:  "min",
