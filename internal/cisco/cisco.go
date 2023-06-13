@@ -31,12 +31,12 @@ type Namer struct {
 }
 
 // LoopbackInterface is an implementation of namer.LoopbackInterface.
-func (n *Namer) LoopbackInterface(index int) (string, error) {
+func (n *Namer) LoopbackInterface(index uint) (string, error) {
 	return fmt.Sprintf("Loopback%d", index), nil
 }
 
 // AggregateInterface is an implementation of namer.AggregateInterface.
-func (n *Namer) AggregateInterface(index int) (string, error) {
+func (n *Namer) AggregateInterface(index uint) (string, error) {
 	const maxIndex = 65534
 	if index > maxIndex {
 		return "", fmt.Errorf("Cisco aggregate index cannot exceed %d, got %d", maxIndex, index)
@@ -45,12 +45,12 @@ func (n *Namer) AggregateInterface(index int) (string, error) {
 }
 
 // AggregateMemberInterface is an implementation of namer.AggregateMemberInterface.
-func (n *Namer) AggregateMemberInterface(index int) (string, error) {
+func (n *Namer) AggregateMemberInterface(index uint) (string, error) {
 	return n.AggregateInterface(index)
 }
 
 // Linecard is an implementation of namer.Linecard.
-func (n *Namer) Linecard(index int) (string, error) {
+func (n *Namer) Linecard(index uint) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
 		return "", fmt.Errorf("Cisco linecard index cannot exceed %d, got %d", maxIndex, index)
@@ -59,7 +59,7 @@ func (n *Namer) Linecard(index int) (string, error) {
 }
 
 // ControllerCard is an implementation of namer.ControllerCard.
-func (n *Namer) ControllerCard(index int) (string, error) {
+func (n *Namer) ControllerCard(index uint) (string, error) {
 	const maxIndex = 1
 	if index > maxIndex {
 		return "", fmt.Errorf("Cisco controller card index cannot exceed %d, got %d", maxIndex, index)
@@ -68,7 +68,7 @@ func (n *Namer) ControllerCard(index int) (string, error) {
 }
 
 // Fabric is an implementation of namer.Fabric.
-func (n *Namer) Fabric(index int) (string, error) {
+func (n *Namer) Fabric(index uint) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
 		return "", fmt.Errorf("Cisco fabric index cannot exceed %d, got %d", maxIndex, index)

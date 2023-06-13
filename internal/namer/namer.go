@@ -25,38 +25,32 @@ import (
 type Namer interface {
 	// LoopbackInterface returns the name of the loopback interface with the
 	// specified zero-based index, or an error if no such name exists.
-	// This method will never be called with a negative index.
-	LoopbackInterface(index int) (string, error)
+	LoopbackInterface(index uint) (string, error)
 
 	// AggregateInterface returns the name of the aggregate interface with
 	// the specified zero-based index, or an error if no such name exists.
-	// This method will never be called with a negative index.
-	AggregateInterface(index int) (string, error)
+	AggregateInterface(index uint) (string, error)
 
 	// AggregateMemberInterface returns the name of the member interface
 	// bound to the aggregate interface with the specified zero-based index,
 	// or an error if no such name exists.
-	// This method will never be called with a negative index.
-	AggregateMemberInterface(index int) (string, error)
+	AggregateMemberInterface(index uint) (string, error)
 
 	// Linecard returns the name of the linecard component with the specified
 	// zero-based index, or an error if no such name exists.
-	// This method will never be called with a negative index.
-	Linecard(index int) (string, error)
+	Linecard(index uint) (string, error)
 
 	// ControllerCard returns the name of the controller card component with the
 	// specified zero-based index, or an error if no such name exists.
-	// This method will never be called with a negative index.
-	ControllerCard(index int) (string, error)
+	ControllerCard(index uint) (string, error)
 
 	// Fabric returns the name of the fabric component with the specified
 	// zero-based index, or an error if no such name exists.
-	// This method will never be called with a negative index.
-	Fabric(index int) (string, error)
+	Fabric(index uint) (string, error)
 
 	// Port returns the name of a physical port with the specified parameters,
 	// or an error if no such name exists. This method will never be called with
-	// negative index parameters or an unset or unknown port speed.
+	// an unset or unknown port speed.
 	Port(port *PortParams) (string, error)
 
 	// Return whether the device has a fixed form factor.
@@ -67,14 +61,14 @@ type Namer interface {
 type PortParams struct {
 	// SlotIndex is the zero-based index of the slot on the device.
 	// This value is nil on fixed form factor devices.
-	SlotIndex *int
+	SlotIndex *uint
 	// PICIndex is the zero-based index of the PIC within the slot.
-	PICIndex int
+	PICIndex uint
 	// PortIndex is the zero-based index of the port within the PIC.
-	PortIndex int
+	PortIndex uint
 	// ChannelIndex is the zero-based index of the channel within the Port.
 	// This value is nil for unchannelized ports.
-	ChannelIndex *int
+	ChannelIndex *uint
 	// Channelizable indicates whether the port can be channelized.
 	Channelizable bool
 	// Speed is the ethernet link speed of the port.

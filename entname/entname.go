@@ -95,7 +95,7 @@ func LoopbackInterface(dp *DeviceParams, index int) (string, error) {
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.LoopbackInterface(index)
+	return namer.LoopbackInterface(uint(index))
 }
 
 // AggregateInterface returns the vendor-specific name of the aggregate
@@ -108,7 +108,7 @@ func AggregateInterface(dp *DeviceParams, index int) (string, error) {
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.AggregateInterface(index)
+	return namer.AggregateInterface(uint(index))
 }
 
 // AggregateMemberInterface returns the vendor-specific name of the member
@@ -121,7 +121,7 @@ func AggregateMemberInterface(dp *DeviceParams, index int) (string, error) {
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.AggregateMemberInterface(index)
+	return namer.AggregateMemberInterface(uint(index))
 }
 
 // Port returns the vendor-specific name of the physical interface with the
@@ -156,16 +156,18 @@ func namerPortParams(pp *PortParams, fixedFormFactor bool) (*namer.PortParams, e
 		return nil, fmt.Errorf("port speed cannot be unset or unknown")
 	}
 	npp := &namer.PortParams{
-		PICIndex:      pp.PICIndex,
-		PortIndex:     pp.PortIndex,
+		PICIndex:      uint(pp.PICIndex),
+		PortIndex:     uint(pp.PortIndex),
 		Speed:         pp.Speed,
 		Channelizable: pp.ChannelState != Unchannelizable,
 	}
 	if !fixedFormFactor {
-		npp.SlotIndex = &pp.SlotIndex
+		slotIndex := uint(pp.SlotIndex)
+		npp.SlotIndex = &slotIndex
 	}
 	if pp.ChannelState == Channelized {
-		npp.ChannelIndex = &pp.ChannelIndex
+		channelIndex := uint(pp.ChannelIndex)
+		npp.ChannelIndex = &channelIndex
 	}
 	return npp, nil
 }
@@ -180,7 +182,7 @@ func Linecard(dp *DeviceParams, index int) (string, error) {
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.Linecard(index)
+	return namer.Linecard(uint(index))
 }
 
 // ControllerCard returns the vendor-specific name of the controller card with
@@ -193,7 +195,7 @@ func ControllerCard(dp *DeviceParams, index int) (string, error) {
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.ControllerCard(index)
+	return namer.ControllerCard(uint(index))
 }
 
 // Fabric returns the vendor-specific name of the fabric with the given
@@ -206,7 +208,7 @@ func Fabric(dp *DeviceParams, index int) (string, error) {
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.Fabric(index)
+	return namer.Fabric(uint(index))
 }
 
 func lookupNamer(dp *DeviceParams) (namer.Namer, error) {
