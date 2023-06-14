@@ -24,35 +24,20 @@ import (
 var jn = new(Namer)
 
 func TestLoopbackInterface(t *testing.T) {
-	tests := []struct {
-		desc  string
-		index uint
-		want  string
-	}{{
-		desc:  "min",
-		index: 0,
-		want:  "lo0.0",
-	}, {
-		desc:  "max",
-		index: 16000,
-		want:  "lo0.16000",
-	}}
-	for _, test := range tests {
-		t.Run(test.desc, func(t *testing.T) {
-			got, err := jn.LoopbackInterface(test.index)
-			if err != nil {
-				t.Fatalf("LoopbackInterface(%v) got error: %v", test.index, err)
-			}
-			if got != test.want {
-				t.Errorf("LoopbackInterface(%d) got %q, want %q", test.index, got, test.want)
-			}
-		})
-	}
+	t.Run("zero", func(t *testing.T) {
+		got, err := jn.LoopbackInterface(0)
+		if err != nil {
+			t.Fatalf("LoopbackInterface(0) got error: %v", err)
+		}
+		if want := "lo0"; got != want {
+			t.Errorf("LoopbackInterface(0) got %q, want %q", want)
+		}
+	})
 
-	t.Run("over max", func(t *testing.T) {
-		_, err := jn.LoopbackInterface(16001)
-		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
-			t.Fatalf("LoopbackInterface(16001) got error %v, want substring %q", err, wantErr)
+	t.Run("nonzero", func(t *testing.T) {
+		_, err := jn.LoopbackInterface(1)
+		if wantErr := "zero"; err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Fatalf("LoopbackInterface(1) got error %v, want substring %q", err, wantErr)
 		}
 	})
 }
