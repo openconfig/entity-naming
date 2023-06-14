@@ -30,7 +30,7 @@ func TestLoopbackInterface(t *testing.T) {
 			t.Fatalf("LoopbackInterface(0) got error: %v", err)
 		}
 		if want := "lo0"; got != want {
-			t.Errorf("LoopbackInterface(0) got %q, want %q", want)
+			t.Errorf("LoopbackInterface(0) got %q, want %q", got, want)
 		}
 	})
 
