@@ -47,15 +47,12 @@ Nokia "lag1."
 
 ## Traffic Queues
 
-The library includes a `CommonTrafficQueues` function that returns the names
-
-The library includes a `CommonTrafficQueues` function that returns a mapping of
+The library includes a `CommonTrafficQueues` function that returns a set of
 common traffic service class tags to queues names. These traffic class tags are
 defined as follows, from highest to lowest priority:
 
-
 | Tag | QoS Level	                  | Description                                                                                                                                        |
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| --- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | NC1 | Network Control               | Traffic critical to the functionality of network devices and protocols, including routing protocol communication (OSPF, BGP, ISIS)                 |
 | AF4 | Assured Forwarding Priority 4 | Critical application and production traffic that requires low latency communication                                                                |
 | AF3 | Assured Forwarding Priority 3 | Mid-priority internal applications and higher bandwidth user applications that have lower latency sensitivity than AF4                             |
