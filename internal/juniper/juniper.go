@@ -31,11 +31,10 @@ type Namer struct {
 
 // LoopbackInterface is an implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index uint) (string, error) {
-	const maxIndex = 16000
-	if index > maxIndex {
-		return "", fmt.Errorf("Juniper loopback index cannot exceed %d, got %d", maxIndex, index)
+	if index != 0 {
+		return "", fmt.Errorf("Juniper only supports loopback interface zero")
 	}
-	return fmt.Sprintf("lo0.%d", index), nil
+	return "lo0", nil
 }
 
 // AggregateInterface is an implementation of namer.AggregateInterface.
