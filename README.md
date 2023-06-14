@@ -12,7 +12,7 @@ free of any I/O. The code does not _not_ communicate with network devices or
 external services. Rather, the library provides simple, pure-Go implementations
 of the vendor-specific entity naming conventions.
 
-## Example
+## Example Usage
 
 Here is the signature for the function for computing the name of an aggregate
 interface:
@@ -44,6 +44,25 @@ aggName, err := AggregateInterface(dev, 0)
 For the Juniper device parameters we provided, `aggName` will be "ae0", but for
 an Arista device it will be "Port-Channel1", for Cisco "Bundle-Ether1", and for
 Nokia "lag1."
+
+## Traffic Queues
+
+The library includes a `CommonTrafficQueues` function that returns the names
+
+The library includes a `CommonTrafficQueues` function that returns a mapping of
+common traffic service class tags to queues names. These traffic class tags are
+defined as follows, from highest to lowest priority:
+
+
+| Tag | QoS Level	                  | Description                                                                                                                                        |
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| NC1 | Network Control               | Traffic critical to the functionality of network devices and protocols, including routing protocol communication (OSPF, BGP, ISIS)                 |
+| AF4 | Assured Forwarding Priority 4 | Critical application and production traffic that requires low latency communication                                                                |
+| AF3 | Assured Forwarding Priority 3 | Mid-priority internal applications and higher bandwidth user applications that have lower latency sensitivity than AF4                             |
+| AF2 | Assured Forwarding Priority 2 | Latency-insensitive, minimal loss-tolerating internal traffic that requires some amount of guaranteed delivery                                     |
+| AF1 | Assured Forwarding Priority 1 | High-bandwidth, latency-insensitive traffic                                                                                                        |
+| BE1 | Best Effort                   | Latency-insensitive, loss-insensitive traffic that can exhibit a substantial amount of packet loss and therefore should not carry any user traffic |
+| BE0 | High-loss Best Effort         | Latency-insensitive, loss-insensitive traffic that can exhibit a higher loss rate than BE1                                                         |
 
 ## Contributions
 

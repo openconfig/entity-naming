@@ -358,6 +358,59 @@ func TestPort(t *testing.T) {
 	}
 }
 
+func TestCommonTrafficQueues(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		var want = &namer.CommonTrafficQueueNames{
+			NC1: "FakeNC1",
+			AF4: "FakeAF4",
+			AF3: "FakeAF3",
+			AF2: "FakeAF2",
+			AF1: "FakeAF1",
+			BE1: "FakeBE1",
+			BE0: "FakeBE0",
+		}
+		setFakeNamer(&fakeNamer{CommonTrafficQueuesFn: func() (*namer.CommonTrafficQueueNames, error) {
+			return want, nil
+		}})
+		got, err := CommonTrafficQueues(devParams)
+		if err != nil {
+			t.Errorf("CommonTrafficQueues(%v) got error %v", devParams, err)
+		}
+		if got, want := got.NC1, want.NC1; got != want {
+			t.Errorf("CommonTrafficQueues(%v).NC1 got %q, want %q", devParams, got, want)
+		}
+		if got, want := got.AF4, want.AF4; got != want {
+			t.Errorf("CommonTrafficQueues(%v).AF4 got %q, want %q", devParams, got, want)
+		}
+		if got, want := got.AF3, want.AF3; got != want {
+			t.Errorf("CommonTrafficQueues(%v).AF3 got %q, want %q", devParams, got, want)
+		}
+		if got, want := got.AF2, want.AF2; got != want {
+			t.Errorf("CommonTrafficQueues(%v).AF2 got %q, want %q", devParams, got, want)
+		}
+		if got, want := got.AF1, want.AF1; got != want {
+			t.Errorf("CommonTrafficQueues(%v).AF1 got %q, want %q", devParams, got, want)
+		}
+		if got, want := got.BE1, want.BE1; got != want {
+			t.Errorf("CommonTrafficQueues(%v).BE1 got %q, want %q", devParams, got, want)
+		}
+		if got, want := got.BE0, want.BE0; got != want {
+			t.Errorf("CommonTrafficQueues(%v).BE0 got %q, want %q", devParams, got, want)
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		const wantErr = "CommonTrafficQueueErr"
+		setFakeNamer(&fakeNamer{CommonTrafficQueuesFn: func() (*namer.CommonTrafficQueueNames, error) {
+			return nil, errors.New(wantErr)
+		}})
+		_, err := CommonTrafficQueues(devParams)
+		if err == nil || !strings.Contains(err.Error(), wantErr) {
+			t.Errorf("CommonTrafficQueues(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+		}
+	})
+}
+
 func setFakeNamer(fn *fakeNamer) {
 	namerFactories[fakeVendor] = func(string) namer.Namer { return fn }
 }
@@ -367,8 +420,9 @@ var _ namer.Namer = (*fakeNamer)(nil)
 type fakeNamer struct {
 	LoopbackInterfaceFn, AggregateInterfaceFn, AggregateMemberInterfaceFn,
 	LinecardFn, ControllerCardFn, FabricFn func(uint) (string, error)
-	PortFn              func(*namer.PortParams) (string, error)
-	IsFixedFormFactorFn func() bool
+	PortFn                func(*namer.PortParams) (string, error)
+	IsFixedFormFactorFn   func() bool
+	CommonTrafficQueuesFn func() (*namer.CommonTrafficQueueNames, error)
 }
 
 func (fn *fakeNamer) LoopbackInterface(index uint) (string, error) {
@@ -401,4 +455,8 @@ func (fn *fakeNamer) Port(pp *namer.PortParams) (string, error) {
 
 func (fn *fakeNamer) IsFixedFormFactor() bool {
 	return fn.IsFixedFormFactorFn()
+}
+
+func (fn *fakeNamer) CommonTrafficQueues() (*namer.CommonTrafficQueueNames, error) {
+	return fn.CommonTrafficQueuesFn()
 }

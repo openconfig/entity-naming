@@ -104,3 +104,16 @@ func (n *Namer) IsFixedFormFactor() bool {
 	// TODO(nokia): Fill in this implementation.
 	return false
 }
+
+// CommonTrafficQueues is an implementation of namer.CommonTrafficQueues.
+func (n *Namer) CommonTrafficQueues() (*namer.CommonTrafficQueueNames, error) {
+	return &namer.CommonTrafficQueueNames{
+		NC1: "7",
+		AF4: "4",
+		AF3: "3",
+		AF2: "2",
+		AF1: "0",
+		BE1: "1",
+		BE0: "1",
+	}, nil
+}

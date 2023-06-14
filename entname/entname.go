@@ -211,6 +211,41 @@ func Fabric(dp *DeviceParams, index int) (string, error) {
 	return namer.Fabric(uint(index))
 }
 
+// CommonTrafficQueueNames are the names of common traffic class queues.
+type CommonTrafficQueueNames struct {
+	NC1, AF4, AF3, AF2, AF1, BE1, BE0 string
+}
+
+func (qn *CommonTrafficQueueNames) String() string {
+	if qn == nil {
+		return "nil"
+	}
+	return fmt.Sprintf("%+v", *qn)
+}
+
+// CommonTrafficQueues returns the vendors-specific names of common traffic
+// class queues. See the definition of common queues here:
+// https://github.com/openconfig/entity-naming/blob/main/README.md#traffic-queues
+func CommonTrafficQueues(dev *DeviceParams) (*CommonTrafficQueueNames, error) {
+	namer, err := lookupNamer(dev)
+	if err != nil {
+		return nil, err
+	}
+	tcq, err := namer.CommonTrafficQueues()
+	if err != nil {
+		return nil, err
+	}
+	return &CommonTrafficQueueNames{
+		NC1: tcq.NC1,
+		AF4: tcq.AF4,
+		AF3: tcq.AF3,
+		AF2: tcq.AF2,
+		AF1: tcq.AF1,
+		BE1: tcq.BE1,
+		BE0: tcq.BE0,
+	}, nil
+}
+
 func lookupNamer(dp *DeviceParams) (namer.Namer, error) {
 	nf, ok := namerFactories[dp.Vendor]
 	if !ok {
