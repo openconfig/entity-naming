@@ -48,18 +48,18 @@ Nokia "lag1."
 ## Traffic Queues
 
 The library includes a `CommonTrafficQueues` function that returns a set of
-common traffic service class tags to queues names. These traffic class tags are
-defined as follows, from highest to lowest priority:
+common traffic class queues names. The traffic class queues are defined as
+follows, from highest to lowest priority:
 
-| Tag | QoS Level                     | Description                                                                                                                                        |
-| --- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| NC1 | Network Control               | Traffic critical to the functionality of network devices and protocols, including routing protocol communication (OSPF, BGP, ISIS)                 |
-| AF4 | Assured Forwarding Priority 4 | Critical application and production traffic that requires low latency communication                                                                |
-| AF3 | Assured Forwarding Priority 3 | Mid-priority internal applications and higher bandwidth user applications that have lower latency sensitivity than AF4                             |
-| AF2 | Assured Forwarding Priority 2 | Latency-insensitive, minimal loss-tolerating internal traffic that requires some amount of guaranteed delivery                                     |
-| AF1 | Assured Forwarding Priority 1 | High-bandwidth, latency-insensitive traffic                                                                                                        |
-| BE1 | Best Effort                   | Latency-insensitive, loss-insensitive traffic that can exhibit a substantial amount of packet loss and therefore should not carry any user traffic |
-| BE0 | High-loss Best Effort         | Latency-insensitive, loss-insensitive traffic that can exhibit a higher loss rate than BE1                                                         |
+| Queue | QoS Level                     | Description                                                                                                                                        |
+| ----- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NC1   | Network Control               | Traffic critical to the functionality of network devices and protocols, including routing protocol communication (OSPF, BGP, ISIS)                 |
+| AF4   | Assured Forwarding Priority 4 | Critical application and production traffic that requires low latency communication                                                                |
+| AF3   | Assured Forwarding Priority 3 | Mid-priority internal applications and higher bandwidth user applications that have lower latency sensitivity than AF4                             |
+| AF2   | Assured Forwarding Priority 2 | Latency-insensitive, minimal loss-tolerating internal traffic that requires some amount of guaranteed delivery                                     |
+| AF1   | Assured Forwarding Priority 1 | High-bandwidth, latency-insensitive traffic                                                                                                        |
+| BE1   | Best Effort                   | Latency-insensitive, loss-insensitive traffic that can exhibit a substantial amount of packet loss and therefore should not carry any user traffic |
+| BE0   | High-loss Best Effort         | Latency-insensitive, loss-insensitive traffic that can exhibit a higher loss rate than BE1                                                         |
 
 ## Contributions
 
