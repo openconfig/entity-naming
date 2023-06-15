@@ -109,3 +109,16 @@ func (n *Namer) IsFixedFormFactor() bool {
 	// TODO(juniper): Fill in this implementation.
 	return false
 }
+
+// CommonTrafficQueues is an implementation of namer.CommonTrafficQueues.
+func (n *Namer) CommonTrafficQueues() (*namer.CommonTrafficQueueNames, error) {
+	return &namer.CommonTrafficQueueNames{
+		NC1: "7",
+		AF4: "6",
+		AF3: "4",
+		AF2: "3",
+		AF1: "2",
+		BE1: "0",
+		BE0: "1",
+	}, nil
+}
