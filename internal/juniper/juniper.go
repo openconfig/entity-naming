@@ -113,12 +113,12 @@ func (n *Namer) IsFixedFormFactor() bool {
 // CommonTrafficQueues is an implementation of namer.CommonTrafficQueues.
 func (n *Namer) CommonTrafficQueues() (*namer.CommonTrafficQueueNames, error) {
 	return &namer.CommonTrafficQueueNames{
-		NC1: "7",
-		AF4: "6",
-		AF3: "4",
-		AF2: "3",
-		AF1: "2",
+		NC1: "3",
+		AF4: "2",
+		AF3: "5",
+		AF2: "1",
+		AF1: "4",
 		BE1: "0",
-		BE0: "1",
+		BE0: "6",
 	}, nil
 }
