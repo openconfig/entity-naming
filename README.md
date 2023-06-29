@@ -1,6 +1,6 @@
 # entity-naming
 
-Entity-naming is a Go library for computing the vendor-specific names of
+Entity-naming is a Go library for computing the vendor-specific names o
 OpenConfig entities. The goal of the library is to enable client code to
 retrieve the name of network entities without including vendor-specific logic
 itself. These entities include physical and virtual interfaces, components like
