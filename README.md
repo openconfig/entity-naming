@@ -45,13 +45,13 @@ For the Juniper device parameters we provided, `aggName` will be "ae0", but for
 an Arista device it will be "Port-Channel1", for Cisco "Bundle-Ether1", and for
 Nokia "lag1."
 
-## Traffic Queues
+## QoS Forwarding Groups
 
-The library includes a `CommonTrafficQueues` function that returns a set of
-common traffic class queues names. The traffic class queues are defined as
-follows, from highest to lowest priority:
+The library includes a `QosForwardingGroups` function that returns a set of
+common QoS forwarding group names. The forwarding groups are defined as follows,
+from highest to lowest priority:
 
-| Queue | QoS Level                     | Description                                                                                                                                        |
+| Group | QoS Level                     | Description                                                                                                                                        |
 | ----- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | NC1   | Network Control               | Traffic critical to the functionality of network devices and protocols, including routing protocol communication (OSPF, BGP, ISIS)                 |
 | AF4   | Assured Forwarding Priority 4 | Critical application and production traffic that requires low latency communication                                                                |

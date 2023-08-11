@@ -51,15 +51,15 @@ type Namer interface {
 	// Port returns the name of a physical port with the specified parameters,
 	// or an error if no such name exists. This method will never be called with
 	// an unset or unknown port speed.
-	Port(port *PortParams) (string, error)
+	Port(pp *PortParams) (string, error)
 
 	// Return whether the device has a fixed form factor.
 	IsFixedFormFactor() bool
 
-	// CommonTrafficQueues returns the names of the common traffic class queues or
-	// an error if no such names exist. See the definition of common queues here:
-	// https://github.com/openconfig/entity-naming/blob/main/README.md#traffic-queues
-	CommonTrafficQueues() (*CommonTrafficQueueNames, error)
+	// QoSForwardingGroups returns the names of the QoS forwarding groups, or an
+	// error if no such names exist. See the forwarding group definitions here:
+	// https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
+	QoSForwardingGroups(qp *QoSParams) (*QoSForwardingGroupNames, error)
 }
 
 // PortParams are parameters of a network port.
@@ -84,11 +84,16 @@ func (pp *PortParams) String() string {
 	return fmt.Sprintf("%+v", *pp)
 }
 
-// CommonTrafficQueueNames are the names of common traffic class queues.
-type CommonTrafficQueueNames struct {
+// QoSParams are parameters of a QoS configuration.
+type QoSParams struct {
+	NumStrictPriority, NumWeightedRoundRobin uint
+}
+
+// QoSForwardingGroupNames are the names of common QoS forwarding groups.
+type QoSForwardingGroupNames struct {
 	NC1, AF4, AF3, AF2, AF1, BE1, BE0 string
 }
 
-func (qn *CommonTrafficQueueNames) String() string {
-	return fmt.Sprintf("%+v", *qn)
+func (q *QoSForwardingGroupNames) String() string {
+	return fmt.Sprintf("%+v", *q)
 }

@@ -17,6 +17,7 @@ package entname
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/openconfig/entity-naming/internal/arista"
 	"github.com/openconfig/entity-naming/internal/cisco"
@@ -88,54 +89,54 @@ func (pp *PortParams) String() string {
 // LoopbackInterface returns the vendor-specific name of the loopback
 // interface with the given zero-based index.
 func LoopbackInterface(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.LoopbackInterface(uint(index))
+	return n.LoopbackInterface(uint(index))
 }
 
 // AggregateInterface returns the vendor-specific name of the aggregate
 // interface with the given zero-based index.
 func AggregateInterface(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.AggregateInterface(uint(index))
+	return n.AggregateInterface(uint(index))
 }
 
 // AggregateMemberInterface returns the vendor-specific name of the member
 // interface bound to the aggregate interface with the given zero-based index.
 func AggregateMemberInterface(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.AggregateMemberInterface(uint(index))
+	return n.AggregateMemberInterface(uint(index))
 }
 
 // Port returns the vendor-specific name of the physical interface with the
 // given port parameters.
 func Port(dp *DeviceParams, pp *PortParams) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
-	npp, err := namerPortParams(pp, namer.IsFixedFormFactor())
+	npp, err := namerPortParams(pp, n.IsFixedFormFactor())
 	if err != nil {
 		return "", err
 	}
-	return namer.Port(npp)
+	return n.Port(npp)
 }
 
 func namerPortParams(pp *PortParams, fixedFormFactor bool) (*namer.PortParams, error) {
@@ -175,40 +176,130 @@ func namerPortParams(pp *PortParams, fixedFormFactor bool) (*namer.PortParams, e
 // Linecard returns the vendor-specific name of the linecard with the given
 // zero-based index.
 func Linecard(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.Linecard(uint(index))
+	return n.Linecard(uint(index))
 }
 
 // ControllerCard returns the vendor-specific name of the controller card with
 // the given zero-based index.
 func ControllerCard(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.ControllerCard(uint(index))
+	return n.ControllerCard(uint(index))
 }
 
 // Fabric returns the vendor-specific name of the fabric with the given
 // zero-based index.
 func Fabric(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.Fabric(uint(index))
+	return n.Fabric(uint(index))
+}
+
+// QosForwardingGroup represents a QoS forwarding group.
+// See the forwarding group definitions here:
+// https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
+type QosForwardingGroup string
+
+const (
+	// NC1 is the NC1 forwarding group.
+	NC1 = QosForwardingGroup("NC1")
+	// AF4 is the AF4 forwarding group.
+	AF4 = QosForwardingGroup("AF4")
+	// AF3 is the AF3 forwarding group.
+	AF3 = QosForwardingGroup("AF3")
+	// AF2 is the AF2 forwarding group.
+	AF2 = QosForwardingGroup("AF2")
+	// AF1 is the AF1 forwarding group.
+	AF1 = QosForwardingGroup("AF1")
+	// BE1 is the BE1 forwarding group.
+	BE1 = QosForwardingGroup("BE1")
+	// BE0 is the BE0 forwarding group.
+	BE0 = QosForwardingGroup("BE0")
+)
+
+// QoSForwardingGroupNames are the names of common QoS forwarding groups.
+type QoSForwardingGroupNames struct {
+	nameByGroup map[QosForwardingGroup]string
+}
+
+// Name returns the name of the specified QoS forwarding group.
+func (q *QoSForwardingGroupNames) Name(fg QosForwardingGroup) string {
+	return q.nameByGroup[fg]
+}
+
+func (q *QoSForwardingGroupNames) String() string {
+	if q == nil {
+		return "nil"
+	}
+	var sb strings.Builder
+	sb.WriteString("{")
+	for k, v := range q.nameByGroup {
+		sb.WriteString(fmt.Sprintf("  %s: %s\n", k, v))
+	}
+	sb.WriteString("}")
+	return sb.String()
+}
+
+// QoSParams are parameters of a QoS configuration.
+type QoSParams struct {
+	NumStrictPriority, NumWeightedRoundRobin int
+}
+
+// QoSForwardingGroups returns the vendors-specific names of common QoS
+// forwarding groups. See the forwarding group definitions here:
+// https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
+func QoSForwardingGroups(dp *DeviceParams, qp *QoSParams) (*QoSForwardingGroupNames, error) {
+	n, err := lookupNamer(dp)
+	if err != nil {
+		return nil, err
+	}
+	nqp, err := namerQoSParams(qp)
+	if err != nil {
+		return nil, err
+	}
+	fgs, err := n.QoSForwardingGroups(nqp)
+	if err != nil {
+		return nil, err
+	}
+	return &QoSForwardingGroupNames{map[QosForwardingGroup]string{
+		NC1: fgs.NC1,
+		AF4: fgs.AF4,
+		AF3: fgs.AF3,
+		AF2: fgs.AF2,
+		AF1: fgs.AF1,
+		BE1: fgs.BE1,
+		BE0: fgs.BE0,
+	}}, nil
+}
+
+func namerQoSParams(qp *QoSParams) (*namer.QoSParams, error) {
+	switch {
+	case qp.NumStrictPriority < 0:
+		return nil, fmt.Errorf("numStrictPriority cannot be negative: %d", qp.NumStrictPriority)
+	case qp.NumWeightedRoundRobin < 0:
+		return nil, fmt.Errorf("numWeightedRoundRobin cannot be negative: %d", qp.NumWeightedRoundRobin)
+	}
+	return &namer.QoSParams{
+		NumStrictPriority:     uint(qp.NumStrictPriority),
+		NumWeightedRoundRobin: uint(qp.NumWeightedRoundRobin),
+	}, nil
 }
 
 // CommonTrafficQueueNames are the names of common traffic class queues.
@@ -224,25 +315,25 @@ func (qn *CommonTrafficQueueNames) String() string {
 }
 
 // CommonTrafficQueues returns the vendors-specific names of common traffic
-// class queues. See the definition of common queues here:
-// https://github.com/openconfig/entity-naming/blob/main/README.md#traffic-queues
-func CommonTrafficQueues(dev *DeviceParams) (*CommonTrafficQueueNames, error) {
-	namer, err := lookupNamer(dev)
+// class queues. See the forwarding group definitions here:
+// https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
+func CommonTrafficQueues(dp *DeviceParams) (*CommonTrafficQueueNames, error) {
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return nil, err
 	}
-	tcq, err := namer.CommonTrafficQueues()
+	fgs, err := n.QoSForwardingGroups(&namer.QoSParams{})
 	if err != nil {
 		return nil, err
 	}
 	return &CommonTrafficQueueNames{
-		NC1: tcq.NC1,
-		AF4: tcq.AF4,
-		AF3: tcq.AF3,
-		AF2: tcq.AF2,
-		AF1: tcq.AF1,
-		BE1: tcq.BE1,
-		BE0: tcq.BE0,
+		NC1: fgs.NC1,
+		AF4: fgs.AF4,
+		AF3: fgs.AF3,
+		AF2: fgs.AF2,
+		AF1: fgs.AF1,
+		BE1: fgs.BE1,
+		BE0: fgs.BE0,
 	}, nil
 }
 

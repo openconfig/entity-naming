@@ -110,9 +110,9 @@ func (n *Namer) IsFixedFormFactor() bool {
 	return false
 }
 
-// CommonTrafficQueues is an implementation of namer.CommonTrafficQueues.
-func (n *Namer) CommonTrafficQueues() (*namer.CommonTrafficQueueNames, error) {
-	return &namer.CommonTrafficQueueNames{
+// QoSForwardingGroups is an implementation of namer.QoSForwardingGroups.
+func (n *Namer) QoSForwardingGroups(*namer.QoSParams) (*namer.QoSForwardingGroupNames, error) {
+	return &namer.QoSForwardingGroupNames{
 		NC1: "7",
 		AF4: "6",
 		AF3: "4",
