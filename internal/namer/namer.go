@@ -51,7 +51,7 @@ type Namer interface {
 	// Port returns the name of a physical port with the specified parameters,
 	// or an error if no such name exists. This method will never be called with
 	// an unset or unknown port speed.
-	Port(pp *PortParams) (string, error)
+	Port(port *PortParams) (string, error)
 
 	// Return whether the device has a fixed form factor.
 	IsFixedFormFactor() bool
@@ -59,7 +59,7 @@ type Namer interface {
 	// QoSForwardingGroups returns the names of the QoS forwarding groups, or an
 	// error if no such names exist. See the forwarding group definitions here:
 	// https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
-	QoSForwardingGroups(qp *QoSParams) (*QoSForwardingGroupNames, error)
+	QoSForwardingGroups(qos *QoSParams) (*QoSForwardingGroupNames, error)
 }
 
 // PortParams are parameters of a network port.

@@ -249,7 +249,7 @@ func (q *QoSForwardingGroupNames) String() string {
 		return "nil"
 	}
 	var sb strings.Builder
-	sb.WriteString("{")
+	sb.WriteString("{\n")
 	for k, v := range q.nameByGroup {
 		sb.WriteString(fmt.Sprintf("  %s: %s\n", k, v))
 	}
@@ -265,12 +265,12 @@ type QoSParams struct {
 // QoSForwardingGroups returns the vendors-specific names of common QoS
 // forwarding groups. See the forwarding group definitions here:
 // https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
-func QoSForwardingGroups(dp *DeviceParams, qp *QoSParams) (*QoSForwardingGroupNames, error) {
-	n, err := lookupNamer(dp)
+func QoSForwardingGroups(dev *DeviceParams, qos *QoSParams) (*QoSForwardingGroupNames, error) {
+	n, err := lookupNamer(dev)
 	if err != nil {
 		return nil, err
 	}
-	nqp, err := namerQoSParams(qp)
+	nqp, err := namerQoSParams(qos)
 	if err != nil {
 		return nil, err
 	}
@@ -289,16 +289,16 @@ func QoSForwardingGroups(dp *DeviceParams, qp *QoSParams) (*QoSForwardingGroupNa
 	}}, nil
 }
 
-func namerQoSParams(qp *QoSParams) (*namer.QoSParams, error) {
+func namerQoSParams(qos *QoSParams) (*namer.QoSParams, error) {
 	switch {
-	case qp.NumStrictPriority < 0:
-		return nil, fmt.Errorf("numStrictPriority cannot be negative: %d", qp.NumStrictPriority)
-	case qp.NumWeightedRoundRobin < 0:
-		return nil, fmt.Errorf("numWeightedRoundRobin cannot be negative: %d", qp.NumWeightedRoundRobin)
+	case qos.NumStrictPriority < 0:
+		return nil, fmt.Errorf("numStrictPriority cannot be negative: %d", qos.NumStrictPriority)
+	case qos.NumWeightedRoundRobin < 0:
+		return nil, fmt.Errorf("numWeightedRoundRobin cannot be negative: %d", qos.NumWeightedRoundRobin)
 	}
 	return &namer.QoSParams{
-		NumStrictPriority:     uint(qp.NumStrictPriority),
-		NumWeightedRoundRobin: uint(qp.NumWeightedRoundRobin),
+		NumStrictPriority:     uint(qos.NumStrictPriority),
+		NumWeightedRoundRobin: uint(qos.NumWeightedRoundRobin),
 	}, nil
 }
 
@@ -317,8 +317,8 @@ func (qn *CommonTrafficQueueNames) String() string {
 // CommonTrafficQueues returns the vendors-specific names of common traffic
 // class queues. See the forwarding group definitions here:
 // https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
-func CommonTrafficQueues(dp *DeviceParams) (*CommonTrafficQueueNames, error) {
-	n, err := lookupNamer(dp)
+func CommonTrafficQueues(dev *DeviceParams) (*CommonTrafficQueueNames, error) {
+	n, err := lookupNamer(dev)
 	if err != nil {
 		return nil, err
 	}
