@@ -322,18 +322,18 @@ func CommonTrafficQueues(dev *DeviceParams) (*CommonTrafficQueueNames, error) {
 	if err != nil {
 		return nil, err
 	}
-	fgs, err := n.CommonQoSQueues(&namer.QoSParams{})
+	cqq, err := n.CommonQoSQueues(&namer.QoSParams{})
 	if err != nil {
 		return nil, err
 	}
 	return &CommonTrafficQueueNames{
-		NC1: fgs.NC1,
-		AF4: fgs.AF4,
-		AF3: fgs.AF3,
-		AF2: fgs.AF2,
-		AF1: fgs.AF1,
-		BE1: fgs.BE1,
-		BE0: fgs.BE0,
+		NC1: cqq.NC1,
+		AF4: cqq.AF4,
+		AF3: cqq.AF3,
+		AF2: cqq.AF2,
+		AF1: cqq.AF1,
+		BE1: cqq.BE1,
+		BE0: cqq.BE0,
 	}, nil
 }
 
