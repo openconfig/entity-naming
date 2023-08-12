@@ -212,45 +212,45 @@ func Fabric(dp *DeviceParams, index int) (string, error) {
 	return n.Fabric(uint(index))
 }
 
-// QosForwardingGroup represents a QoS forwarding group.
-// See the forwarding group definitions here:
-// https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
-type QosForwardingGroup string
+// QosQueue represents a common QoS queue.
+// See the common QoS queue definitions here:
+// https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
+type QosQueue string
 
 const (
-	// NC1 is the NC1 forwarding group.
-	NC1 = QosForwardingGroup("NC1")
-	// AF4 is the AF4 forwarding group.
-	AF4 = QosForwardingGroup("AF4")
-	// AF3 is the AF3 forwarding group.
-	AF3 = QosForwardingGroup("AF3")
-	// AF2 is the AF2 forwarding group.
-	AF2 = QosForwardingGroup("AF2")
-	// AF1 is the AF1 forwarding group.
-	AF1 = QosForwardingGroup("AF1")
-	// BE1 is the BE1 forwarding group.
-	BE1 = QosForwardingGroup("BE1")
-	// BE0 is the BE0 forwarding group.
-	BE0 = QosForwardingGroup("BE0")
+	// NC1 is the NC1 queue.
+	NC1 = QosQueue("NC1")
+	// AF4 is the AF4 queue.
+	AF4 = QosQueue("AF4")
+	// AF3 is the AF3 queue.
+	AF3 = QosQueue("AF3")
+	// AF2 is the AF2 queue.
+	AF2 = QosQueue("AF2")
+	// AF1 is the AF1 queue.
+	AF1 = QosQueue("AF1")
+	// BE1 is the BE1 queue.
+	BE1 = QosQueue("BE1")
+	// BE0 is the BE0 queue.
+	BE0 = QosQueue("BE0")
 )
 
-// QoSForwardingGroupNames are the names of common QoS forwarding groups.
-type QoSForwardingGroupNames struct {
-	nameByGroup map[QosForwardingGroup]string
+// CommonQoSQueueNames are the names of the common QoS queues.
+type CommonQoSQueueNames struct {
+	nameByGroup map[QosQueue]string
 }
 
 // Name returns the name of the specified QoS forwarding group.
-func (q *QoSForwardingGroupNames) Name(fg QosForwardingGroup) string {
-	return q.nameByGroup[fg]
+func (qn *CommonQoSQueueNames) Name(q QosQueue) string {
+	return qn.nameByGroup[q]
 }
 
-func (q *QoSForwardingGroupNames) String() string {
-	if q == nil {
+func (qn *CommonQoSQueueNames) String() string {
+	if qn == nil {
 		return "nil"
 	}
 	var sb strings.Builder
 	sb.WriteString("{\n")
-	for k, v := range q.nameByGroup {
+	for k, v := range qn.nameByGroup {
 		sb.WriteString(fmt.Sprintf("  %s: %s\n", k, v))
 	}
 	sb.WriteString("}")
@@ -262,10 +262,10 @@ type QoSParams struct {
 	NumStrictPriority, NumWeightedRoundRobin int
 }
 
-// QoSForwardingGroups returns the vendors-specific names of common QoS
-// forwarding groups. See the forwarding group definitions here:
-// https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
-func QoSForwardingGroups(dev *DeviceParams, qos *QoSParams) (*QoSForwardingGroupNames, error) {
+// CommonQoSQueues returns the vendors-specific names of common QoS queues.
+// See the common QoS queue definitions here:
+// https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
+func CommonQoSQueues(dev *DeviceParams, qos *QoSParams) (*CommonQoSQueueNames, error) {
 	n, err := lookupNamer(dev)
 	if err != nil {
 		return nil, err
@@ -274,18 +274,18 @@ func QoSForwardingGroups(dev *DeviceParams, qos *QoSParams) (*QoSForwardingGroup
 	if err != nil {
 		return nil, err
 	}
-	fgs, err := n.QoSForwardingGroups(nqp)
+	cqq, err := n.CommonQoSQueues(nqp)
 	if err != nil {
 		return nil, err
 	}
-	return &QoSForwardingGroupNames{map[QosForwardingGroup]string{
-		NC1: fgs.NC1,
-		AF4: fgs.AF4,
-		AF3: fgs.AF3,
-		AF2: fgs.AF2,
-		AF1: fgs.AF1,
-		BE1: fgs.BE1,
-		BE0: fgs.BE0,
+	return &CommonQoSQueueNames{map[QosQueue]string{
+		NC1: cqq.NC1,
+		AF4: cqq.AF4,
+		AF3: cqq.AF3,
+		AF2: cqq.AF2,
+		AF1: cqq.AF1,
+		BE1: cqq.BE1,
+		BE0: cqq.BE0,
 	}}, nil
 }
 
@@ -316,13 +316,13 @@ func (qn *CommonTrafficQueueNames) String() string {
 
 // CommonTrafficQueues returns the vendors-specific names of common traffic
 // class queues. See the forwarding group definitions here:
-// https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
+// Deprecated: Use the CommonQoSQueses function instead.
 func CommonTrafficQueues(dev *DeviceParams) (*CommonTrafficQueueNames, error) {
 	n, err := lookupNamer(dev)
 	if err != nil {
 		return nil, err
 	}
-	fgs, err := n.QoSForwardingGroups(&namer.QoSParams{})
+	fgs, err := n.CommonQoSQueues(&namer.QoSParams{})
 	if err != nil {
 		return nil, err
 	}

@@ -79,7 +79,7 @@ func (n *Namer) Fabric(index uint) (string, error) {
 	return fmt.Sprintf("Fabric%d", index+1), nil
 }
 
-// Port is an Arista implementation of namer.Port.
+// Port is an implementation of namer.Port.
 func (n *Namer) Port(pp *namer.PortParams) (string, error) {
 	var nameBuilder strings.Builder
 	nameBuilder.WriteString("Ethernet")
@@ -97,15 +97,15 @@ func (n *Namer) Port(pp *namer.PortParams) (string, error) {
 	return nameBuilder.String(), nil
 }
 
-// IsFixedFormFactor is an Arista implementation of namer.IsFixedFormFactor.
+// IsFixedFormFactor is an implementation of namer.IsFixedFormFactor.
 func (n *Namer) IsFixedFormFactor() bool {
 	// TODO(arista): Fill in this implementation.
 	return false
 }
 
-// QoSForwardingGroups is an implementation of namer.QoSForwardingGroups.
-func (n *Namer) QoSForwardingGroups(*namer.QoSParams) (*namer.QoSForwardingGroupNames, error) {
-	return &namer.QoSForwardingGroupNames{
+// CommonQoSQueues is an implementation of namer.CommonQoSQueues.
+func (n *Namer) CommonQoSQueues(*namer.QoSParams) (*namer.CommonQoSQueueNames, error) {
+	return &namer.CommonQoSQueueNames{
 		NC1: "NC1",
 		AF4: "AF4",
 		AF3: "AF3",

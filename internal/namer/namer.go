@@ -56,10 +56,10 @@ type Namer interface {
 	// Return whether the device has a fixed form factor.
 	IsFixedFormFactor() bool
 
-	// QoSForwardingGroups returns the names of the QoS forwarding groups, or an
-	// error if no such names exist. See the forwarding group definitions here:
-	// https://github.com/openconfig/entity-naming/blob/main/README.md#qos-forwarding-groups
-	QoSForwardingGroups(qos *QoSParams) (*QoSForwardingGroupNames, error)
+	// CommonQoSQueues returns the names of the common QoS queues, or an error
+	// if no such names exist. See the common QoS queue definitions here:
+	// https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
+	CommonQoSQueues(qos *QoSParams) (*CommonQoSQueueNames, error)
 }
 
 // PortParams are parameters of a network port.
@@ -89,11 +89,11 @@ type QoSParams struct {
 	NumStrictPriority, NumWeightedRoundRobin uint
 }
 
-// QoSForwardingGroupNames are the names of common QoS forwarding groups.
-type QoSForwardingGroupNames struct {
+// CommonQoSQueueNames are the names of common QoS queues.
+type CommonQoSQueueNames struct {
 	NC1, AF4, AF3, AF2, AF1, BE1, BE0 string
 }
 
-func (q *QoSForwardingGroupNames) String() string {
+func (q *CommonQoSQueueNames) String() string {
 	return fmt.Sprintf("%+v", *q)
 }
