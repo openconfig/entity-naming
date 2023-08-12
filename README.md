@@ -49,7 +49,7 @@ Nokia "lag1."
 
 The library includes a `CommonQoSQueues` function that returns the
 vendor-specific names of common QoS queues. To learn details of the OpenConfig
-QoS model, see https://openconfig.net/docs/models/qos/. The common queues are
+QoS model, see <https://openconfig.net/docs/models/qos/>. The common queues are
 defined in the following table, from highest to lowest priority:
 
 | Queue | QoS Level                     | Description                                                                                                                                        |
