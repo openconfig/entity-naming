@@ -94,6 +94,6 @@ type CommonQoSQueueNames struct {
 	NC1, AF4, AF3, AF2, AF1, BE1, BE0 string
 }
 
-func (q *CommonQoSQueueNames) String() string {
-	return fmt.Sprintf("%+v", *q)
+func (qn *CommonQoSQueueNames) String() string {
+	return fmt.Sprintf("%+v", *qn)
 }

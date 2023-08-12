@@ -239,7 +239,7 @@ type CommonQoSQueueNames struct {
 	nameByGroup map[QosQueue]string
 }
 
-// Name returns the name of the specified QoS forwarding group.
+// Name returns the name of the specified QoS queue.
 func (qn *CommonQoSQueueNames) Name(q QosQueue) string {
 	return qn.nameByGroup[q]
 }
@@ -316,7 +316,7 @@ func (qn *CommonTrafficQueueNames) String() string {
 
 // CommonTrafficQueues returns the vendors-specific names of common traffic
 // class queues. See the forwarding group definitions here:
-// Deprecated: Use the CommonQoSQueses function instead.
+// Deprecated: Use the CommonQoSQueues function instead.
 func CommonTrafficQueues(dev *DeviceParams) (*CommonTrafficQueueNames, error) {
 	n, err := lookupNamer(dev)
 	if err != nil {
