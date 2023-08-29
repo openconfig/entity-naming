@@ -17,6 +17,7 @@ package entname
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/openconfig/entity-naming/internal/arista"
 	"github.com/openconfig/entity-naming/internal/cisco"
@@ -88,54 +89,54 @@ func (pp *PortParams) String() string {
 // LoopbackInterface returns the vendor-specific name of the loopback
 // interface with the given zero-based index.
 func LoopbackInterface(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.LoopbackInterface(uint(index))
+	return n.LoopbackInterface(uint(index))
 }
 
 // AggregateInterface returns the vendor-specific name of the aggregate
 // interface with the given zero-based index.
 func AggregateInterface(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.AggregateInterface(uint(index))
+	return n.AggregateInterface(uint(index))
 }
 
 // AggregateMemberInterface returns the vendor-specific name of the member
 // interface bound to the aggregate interface with the given zero-based index.
 func AggregateMemberInterface(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.AggregateMemberInterface(uint(index))
+	return n.AggregateMemberInterface(uint(index))
 }
 
 // Port returns the vendor-specific name of the physical interface with the
 // given port parameters.
 func Port(dp *DeviceParams, pp *PortParams) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
-	npp, err := namerPortParams(pp, namer.IsFixedFormFactor())
+	npp, err := namerPortParams(pp, n.IsFixedFormFactor())
 	if err != nil {
 		return "", err
 	}
-	return namer.Port(npp)
+	return n.Port(npp)
 }
 
 func namerPortParams(pp *PortParams, fixedFormFactor bool) (*namer.PortParams, error) {
@@ -175,40 +176,130 @@ func namerPortParams(pp *PortParams, fixedFormFactor bool) (*namer.PortParams, e
 // Linecard returns the vendor-specific name of the linecard with the given
 // zero-based index.
 func Linecard(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.Linecard(uint(index))
+	return n.Linecard(uint(index))
 }
 
 // ControllerCard returns the vendor-specific name of the controller card with
 // the given zero-based index.
 func ControllerCard(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.ControllerCard(uint(index))
+	return n.ControllerCard(uint(index))
 }
 
 // Fabric returns the vendor-specific name of the fabric with the given
 // zero-based index.
 func Fabric(dp *DeviceParams, index int) (string, error) {
-	namer, err := lookupNamer(dp)
+	n, err := lookupNamer(dp)
 	if err != nil {
 		return "", err
 	}
 	if index < 0 {
 		return "", fmt.Errorf("interface index cannot be negative: %d", index)
 	}
-	return namer.Fabric(uint(index))
+	return n.Fabric(uint(index))
+}
+
+// QosQueue represents a common QoS queue.
+// See the common QoS queue definitions here:
+// https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
+type QosQueue string
+
+const (
+	// NC1 is the NC1 queue.
+	NC1 = QosQueue("NC1")
+	// AF4 is the AF4 queue.
+	AF4 = QosQueue("AF4")
+	// AF3 is the AF3 queue.
+	AF3 = QosQueue("AF3")
+	// AF2 is the AF2 queue.
+	AF2 = QosQueue("AF2")
+	// AF1 is the AF1 queue.
+	AF1 = QosQueue("AF1")
+	// BE1 is the BE1 queue.
+	BE1 = QosQueue("BE1")
+	// BE0 is the BE0 queue.
+	BE0 = QosQueue("BE0")
+)
+
+// CommonQoSQueueNames are the names of the common QoS queues.
+type CommonQoSQueueNames struct {
+	nameByGroup map[QosQueue]string
+}
+
+// Name returns the name of the specified QoS queue.
+func (qn *CommonQoSQueueNames) Name(q QosQueue) string {
+	return qn.nameByGroup[q]
+}
+
+func (qn *CommonQoSQueueNames) String() string {
+	if qn == nil {
+		return "nil"
+	}
+	var sb strings.Builder
+	sb.WriteString("{\n")
+	for k, v := range qn.nameByGroup {
+		sb.WriteString(fmt.Sprintf("  %s: %s\n", k, v))
+	}
+	sb.WriteString("}")
+	return sb.String()
+}
+
+// QoSParams are parameters of a QoS configuration.
+type QoSParams struct {
+	NumStrictPriority, NumWeightedRoundRobin int
+}
+
+// CommonQoSQueues returns the vendors-specific names of common QoS queues.
+// See the common QoS queue definitions here:
+// https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
+func CommonQoSQueues(dev *DeviceParams, qos *QoSParams) (*CommonQoSQueueNames, error) {
+	n, err := lookupNamer(dev)
+	if err != nil {
+		return nil, err
+	}
+	nqp, err := namerQoSParams(qos)
+	if err != nil {
+		return nil, err
+	}
+	cqq, err := n.CommonQoSQueues(nqp)
+	if err != nil {
+		return nil, err
+	}
+	return &CommonQoSQueueNames{map[QosQueue]string{
+		NC1: cqq.NC1,
+		AF4: cqq.AF4,
+		AF3: cqq.AF3,
+		AF2: cqq.AF2,
+		AF1: cqq.AF1,
+		BE1: cqq.BE1,
+		BE0: cqq.BE0,
+	}}, nil
+}
+
+func namerQoSParams(qos *QoSParams) (*namer.QoSParams, error) {
+	switch {
+	case qos.NumStrictPriority < 0:
+		return nil, fmt.Errorf("numStrictPriority cannot be negative: %d", qos.NumStrictPriority)
+	case qos.NumWeightedRoundRobin < 0:
+		return nil, fmt.Errorf("numWeightedRoundRobin cannot be negative: %d", qos.NumWeightedRoundRobin)
+	}
+	return &namer.QoSParams{
+		NumStrictPriority:     uint(qos.NumStrictPriority),
+		NumWeightedRoundRobin: uint(qos.NumWeightedRoundRobin),
+	}, nil
 }
 
 // CommonTrafficQueueNames are the names of common traffic class queues.
@@ -224,25 +315,25 @@ func (qn *CommonTrafficQueueNames) String() string {
 }
 
 // CommonTrafficQueues returns the vendors-specific names of common traffic
-// class queues. See the definition of common queues here:
-// https://github.com/openconfig/entity-naming/blob/main/README.md#traffic-queues
+// class queues. See the forwarding group definitions here:
+// Deprecated: Use the CommonQoSQueues function instead.
 func CommonTrafficQueues(dev *DeviceParams) (*CommonTrafficQueueNames, error) {
-	namer, err := lookupNamer(dev)
+	n, err := lookupNamer(dev)
 	if err != nil {
 		return nil, err
 	}
-	tcq, err := namer.CommonTrafficQueues()
+	cqq, err := n.CommonQoSQueues(&namer.QoSParams{})
 	if err != nil {
 		return nil, err
 	}
 	return &CommonTrafficQueueNames{
-		NC1: tcq.NC1,
-		AF4: tcq.AF4,
-		AF3: tcq.AF3,
-		AF2: tcq.AF2,
-		AF1: tcq.AF1,
-		BE1: tcq.BE1,
-		BE0: tcq.BE0,
+		NC1: cqq.NC1,
+		AF4: cqq.AF4,
+		AF3: cqq.AF3,
+		AF2: cqq.AF2,
+		AF1: cqq.AF1,
+		BE1: cqq.BE1,
+		BE0: cqq.BE0,
 	}, nil
 }
 

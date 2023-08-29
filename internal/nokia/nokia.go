@@ -83,7 +83,7 @@ func (n *Namer) Fabric(index uint) (string, error) {
 	return fmt.Sprintf("Fabric%d", index+1), nil
 }
 
-// Port is a Nokia implementation of namer.Port.
+// Port is an implementation of namer.Port.
 func (n *Namer) Port(pp *namer.PortParams) (string, error) {
 	var nameBuilder strings.Builder
 	nameBuilder.WriteString("et-")
@@ -99,15 +99,15 @@ func (n *Namer) Port(pp *namer.PortParams) (string, error) {
 	return nameBuilder.String(), nil
 }
 
-// IsFixedFormFactor is a Nokia implementation of namer.IsFixedFormFactor.
+// IsFixedFormFactor is an implementation of namer.IsFixedFormFactor.
 func (n *Namer) IsFixedFormFactor() bool {
 	// TODO(nokia): Fill in this implementation.
 	return false
 }
 
-// CommonTrafficQueues is an implementation of namer.CommonTrafficQueues.
-func (n *Namer) CommonTrafficQueues() (*namer.CommonTrafficQueueNames, error) {
-	return &namer.CommonTrafficQueueNames{
+// CommonQoSQueues is an implementation of namer.CommonQoSQueueNames.
+func (n *Namer) CommonQoSQueues(*namer.QoSParams) (*namer.CommonQoSQueueNames, error) {
+	return &namer.CommonQoSQueueNames{
 		NC1: "NC1",
 		AF4: "AF4",
 		AF3: "AF3",

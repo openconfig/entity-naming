@@ -45,11 +45,12 @@ For the Juniper device parameters we provided, `aggName` will be "ae0", but for
 an Arista device it will be "Port-Channel1", for Cisco "Bundle-Ether1", and for
 Nokia "lag1."
 
-## Traffic Queues
+## Common QoS Queues
 
-The library includes a `CommonTrafficQueues` function that returns a set of
-common traffic class queues names. The traffic class queues are defined as
-follows, from highest to lowest priority:
+The library includes a `CommonQoSQueues` function that returns the
+vendor-specific names of common QoS queues. To learn details of the OpenConfig
+QoS model, see <https://openconfig.net/docs/models/qos/>. The common queues are
+defined in the following table, from highest to lowest priority:
 
 | Queue | QoS Level                     | Description                                                                                                                                        |
 | ----- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |

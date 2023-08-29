@@ -82,7 +82,7 @@ var speedStrings = map[oc.E_IfEthernet_ETHERNET_SPEED]string{
 	oc.IfEthernet_ETHERNET_SPEED_SPEED_400GB: "FourHundredGig",
 }
 
-// Port is a Cisco implementation of namer.Port.
+// Port is an implementation of namer.Port.
 func (n *Namer) Port(pp *namer.PortParams) (string, error) {
 	speed, ok := speedStrings[pp.Speed]
 	if !ok {
@@ -102,15 +102,15 @@ func (n *Namer) Port(pp *namer.PortParams) (string, error) {
 	return nameBuilder.String(), nil
 }
 
-// IsFixedFormFactor is a Cisco implementation of namer.IsFixedFormFactor.
+// IsFixedFormFactor is an implementation of namer.IsFixedFormFactor.
 func (n *Namer) IsFixedFormFactor() bool {
 	// TODO(cisco): Fill in this implementation.
 	return false
 }
 
-// CommonTrafficQueues is an implementation of namer.CommonTrafficQueues.
-func (n *Namer) CommonTrafficQueues() (*namer.CommonTrafficQueueNames, error) {
-	return &namer.CommonTrafficQueueNames{
+// CommonQoSQueues is an implementation of namer.CommonQoSQueues.
+func (n *Namer) CommonQoSQueues(*namer.QoSParams) (*namer.CommonQoSQueueNames, error) {
+	return &namer.CommonQoSQueueNames{
 		NC1: "NC1",
 		AF4: "AF4",
 		AF3: "AF3",

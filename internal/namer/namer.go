@@ -56,10 +56,10 @@ type Namer interface {
 	// Return whether the device has a fixed form factor.
 	IsFixedFormFactor() bool
 
-	// CommonTrafficQueues returns the names of the common traffic class queues or
-	// an error if no such names exist. See the definition of common queues here:
-	// https://github.com/openconfig/entity-naming/blob/main/README.md#traffic-queues
-	CommonTrafficQueues() (*CommonTrafficQueueNames, error)
+	// CommonQoSQueues returns the names of the common QoS queues, or an error
+	// if no such names exist. See the common QoS queue definitions here:
+	// https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
+	CommonQoSQueues(qos *QoSParams) (*CommonQoSQueueNames, error)
 }
 
 // PortParams are parameters of a network port.
@@ -84,11 +84,16 @@ func (pp *PortParams) String() string {
 	return fmt.Sprintf("%+v", *pp)
 }
 
-// CommonTrafficQueueNames are the names of common traffic class queues.
-type CommonTrafficQueueNames struct {
+// QoSParams are parameters of a QoS configuration.
+type QoSParams struct {
+	NumStrictPriority, NumWeightedRoundRobin uint
+}
+
+// CommonQoSQueueNames are the names of common QoS queues.
+type CommonQoSQueueNames struct {
 	NC1, AF4, AF3, AF2, AF1, BE1, BE0 string
 }
 
-func (qn *CommonTrafficQueueNames) String() string {
+func (qn *CommonQoSQueueNames) String() string {
 	return fmt.Sprintf("%+v", *qn)
 }

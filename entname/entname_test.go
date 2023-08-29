@@ -358,9 +358,9 @@ func TestPort(t *testing.T) {
 	}
 }
 
-func TestCommonTrafficQueues(t *testing.T) {
+func TestCommonQoSQueues(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		var want = &namer.CommonTrafficQueueNames{
+		var want = &namer.CommonQoSQueueNames{
 			NC1: "FakeNC1",
 			AF4: "FakeAF4",
 			AF3: "FakeAF3",
@@ -369,44 +369,44 @@ func TestCommonTrafficQueues(t *testing.T) {
 			BE1: "FakeBE1",
 			BE0: "FakeBE0",
 		}
-		setFakeNamer(&fakeNamer{CommonTrafficQueuesFn: func() (*namer.CommonTrafficQueueNames, error) {
+		setFakeNamer(&fakeNamer{CommonQoSQueuesFn: func(*namer.QoSParams) (*namer.CommonQoSQueueNames, error) {
 			return want, nil
 		}})
-		got, err := CommonTrafficQueues(devParams)
+		got, err := CommonQoSQueues(devParams, &QoSParams{})
 		if err != nil {
-			t.Errorf("CommonTrafficQueues(%v) got error %v", devParams, err)
+			t.Errorf("CommonQoSQueues(%v) got error %v", devParams, err)
 		}
-		if got, want := got.NC1, want.NC1; got != want {
-			t.Errorf("CommonTrafficQueues(%v).NC1 got %q, want %q", devParams, got, want)
+		if got, want := got.Name(NC1), want.NC1; got != want {
+			t.Errorf("CommonQoSQueues(%v) NC1 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.AF4, want.AF4; got != want {
-			t.Errorf("CommonTrafficQueues(%v).AF4 got %q, want %q", devParams, got, want)
+		if got, want := got.Name(AF4), want.AF4; got != want {
+			t.Errorf("CommonQoSQueues(%v) AF4 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.AF3, want.AF3; got != want {
-			t.Errorf("CommonTrafficQueues(%v).AF3 got %q, want %q", devParams, got, want)
+		if got, want := got.Name(AF3), want.AF3; got != want {
+			t.Errorf("CommonQoSQueues(%v) AF3 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.AF2, want.AF2; got != want {
-			t.Errorf("CommonTrafficQueues(%v).AF2 got %q, want %q", devParams, got, want)
+		if got, want := got.Name(AF2), want.AF2; got != want {
+			t.Errorf("CommonQoSQueues(%v) AF2 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.AF1, want.AF1; got != want {
-			t.Errorf("CommonTrafficQueues(%v).AF1 got %q, want %q", devParams, got, want)
+		if got, want := got.Name(AF1), want.AF1; got != want {
+			t.Errorf("CommonQoSQueues(%v) AF1 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.BE1, want.BE1; got != want {
-			t.Errorf("CommonTrafficQueues(%v).BE1 got %q, want %q", devParams, got, want)
+		if got, want := got.Name(BE1), want.BE1; got != want {
+			t.Errorf("CommonQoSQueues(%v) BE1 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.BE0, want.BE0; got != want {
-			t.Errorf("CommonTrafficQueues(%v).BE0 got %q, want %q", devParams, got, want)
+		if got, want := got.Name(BE0), want.BE0; got != want {
+			t.Errorf("CommonQoSQueues(%v) BE0 got %q, want %q", devParams, got, want)
 		}
 	})
 
 	t.Run("error", func(t *testing.T) {
-		const wantErr = "CommonTrafficQueueErr"
-		setFakeNamer(&fakeNamer{CommonTrafficQueuesFn: func() (*namer.CommonTrafficQueueNames, error) {
+		const wantErr = "CommonQoSQueuesErr"
+		setFakeNamer(&fakeNamer{CommonQoSQueuesFn: func(*namer.QoSParams) (*namer.CommonQoSQueueNames, error) {
 			return nil, errors.New(wantErr)
 		}})
-		_, err := CommonTrafficQueues(devParams)
+		_, err := CommonQoSQueues(devParams, &QoSParams{})
 		if err == nil || !strings.Contains(err.Error(), wantErr) {
-			t.Errorf("CommonTrafficQueues(%v,0) got error %v, want substring %q", devParams, err, wantErr)
+			t.Errorf("CommonQoSQueues(%v,0) got error %v, want substring %q", devParams, err, wantErr)
 		}
 	})
 }
@@ -420,9 +420,9 @@ var _ namer.Namer = (*fakeNamer)(nil)
 type fakeNamer struct {
 	LoopbackInterfaceFn, AggregateInterfaceFn, AggregateMemberInterfaceFn,
 	LinecardFn, ControllerCardFn, FabricFn func(uint) (string, error)
-	PortFn                func(*namer.PortParams) (string, error)
-	IsFixedFormFactorFn   func() bool
-	CommonTrafficQueuesFn func() (*namer.CommonTrafficQueueNames, error)
+	PortFn              func(*namer.PortParams) (string, error)
+	IsFixedFormFactorFn func() bool
+	CommonQoSQueuesFn   func(*namer.QoSParams) (*namer.CommonQoSQueueNames, error)
 }
 
 func (fn *fakeNamer) LoopbackInterface(index uint) (string, error) {
@@ -457,6 +457,6 @@ func (fn *fakeNamer) IsFixedFormFactor() bool {
 	return fn.IsFixedFormFactorFn()
 }
 
-func (fn *fakeNamer) CommonTrafficQueues() (*namer.CommonTrafficQueueNames, error) {
-	return fn.CommonTrafficQueuesFn()
+func (fn *fakeNamer) CommonQoSQueues(qp *namer.QoSParams) (*namer.CommonQoSQueueNames, error) {
+	return fn.CommonQoSQueuesFn(qp)
 }

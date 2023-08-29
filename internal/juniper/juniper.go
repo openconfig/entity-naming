@@ -82,7 +82,7 @@ func (n *Namer) Fabric(index uint) (string, error) {
 	return fmt.Sprintf("SIB%d", index), nil
 }
 
-// Port is a Juniper implementation of namer.Port.
+// Port is an implementation of namer.Port.
 func (n *Namer) Port(pp *namer.PortParams) (string, error) {
 	if !pp.Channelizable {
 		return "", fmt.Errorf("Juniper does not support unchannelizable ports")
@@ -104,15 +104,15 @@ func (n *Namer) Port(pp *namer.PortParams) (string, error) {
 	return nameBuilder.String(), nil
 }
 
-// IsFixedFormFactor is a Juniper implementation of namer.IsFixedFormFactor.
+// IsFixedFormFactor is an implementation of namer.IsFixedFormFactor.
 func (n *Namer) IsFixedFormFactor() bool {
 	// TODO(juniper): Fill in this implementation.
 	return false
 }
 
-// CommonTrafficQueues is an implementation of namer.CommonTrafficQueues.
-func (n *Namer) CommonTrafficQueues() (*namer.CommonTrafficQueueNames, error) {
-	return &namer.CommonTrafficQueueNames{
+// CommonQoSQueues is an implementation of namer.CommonQoSQueues.
+func (n *Namer) CommonQoSQueues(*namer.QoSParams) (*namer.CommonQoSQueueNames, error) {
+	return &namer.CommonQoSQueueNames{
 		NC1: "7",
 		AF4: "6",
 		AF3: "4",
