@@ -376,25 +376,25 @@ func TestCommonQoSQueues(t *testing.T) {
 		if err != nil {
 			t.Errorf("CommonQoSQueues(%v) got error %v", devParams, err)
 		}
-		if got, want := got.Name(NC1), want.NC1; got != want {
+		if got, want := got.Name(QoSNC1), want.NC1; got != want {
 			t.Errorf("CommonQoSQueues(%v) NC1 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.Name(AF4), want.AF4; got != want {
+		if got, want := got.Name(QoSAF4), want.AF4; got != want {
 			t.Errorf("CommonQoSQueues(%v) AF4 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.Name(AF3), want.AF3; got != want {
+		if got, want := got.Name(QoSAF3), want.AF3; got != want {
 			t.Errorf("CommonQoSQueues(%v) AF3 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.Name(AF2), want.AF2; got != want {
+		if got, want := got.Name(QoSAF2), want.AF2; got != want {
 			t.Errorf("CommonQoSQueues(%v) AF2 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.Name(AF1), want.AF1; got != want {
+		if got, want := got.Name(QoSAF1), want.AF1; got != want {
 			t.Errorf("CommonQoSQueues(%v) AF1 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.Name(BE1), want.BE1; got != want {
+		if got, want := got.Name(QoSBE1), want.BE1; got != want {
 			t.Errorf("CommonQoSQueues(%v) BE1 got %q, want %q", devParams, got, want)
 		}
-		if got, want := got.Name(BE0), want.BE0; got != want {
+		if got, want := got.Name(QoSBE0), want.BE0; got != want {
 			t.Errorf("CommonQoSQueues(%v) BE0 got %q, want %q", devParams, got, want)
 		}
 	})

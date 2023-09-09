@@ -212,35 +212,35 @@ func Fabric(dp *DeviceParams, index int) (string, error) {
 	return n.Fabric(uint(index))
 }
 
-// QosQueue represents a common QoS queue.
+// QoSQueue represents a common QoS queue.
 // See the common QoS queue definitions here:
 // https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
-type QosQueue string
+type QoSQueue string
 
 const (
-	// NC1 is the NC1 queue.
-	NC1 = QosQueue("NC1")
-	// AF4 is the AF4 queue.
-	AF4 = QosQueue("AF4")
-	// AF3 is the AF3 queue.
-	AF3 = QosQueue("AF3")
-	// AF2 is the AF2 queue.
-	AF2 = QosQueue("AF2")
-	// AF1 is the AF1 queue.
-	AF1 = QosQueue("AF1")
-	// BE1 is the BE1 queue.
-	BE1 = QosQueue("BE1")
-	// BE0 is the BE0 queue.
-	BE0 = QosQueue("BE0")
+	// NC1 is the NC1 QoS queue.
+	QoSNC1 = QoSQueue("NC1")
+	// AF4 is the AF4 QoS queue.
+	QoSAF4 = QoSQueue("AF4")
+	// AF3 is the AF3 QoS queue.
+	QoSAF3 = QoSQueue("AF3")
+	// AF2 is the AF2 QoS queue.
+	QoSAF2 = QoSQueue("AF2")
+	// AF1 is the AF1 QoS queue.
+	QoSAF1 = QoSQueue("AF1")
+	// BE1 is the BE1 QoS queue.
+	QoSBE1 = QoSQueue("BE1")
+	// BE0 is the BE0 QoS queue.
+	QoSBE0 = QoSQueue("BE0")
 )
 
 // CommonQoSQueueNames are the names of the common QoS queues.
 type CommonQoSQueueNames struct {
-	nameByGroup map[QosQueue]string
+	nameByGroup map[QoSQueue]string
 }
 
 // Name returns the name of the specified QoS queue.
-func (qn *CommonQoSQueueNames) Name(q QosQueue) string {
+func (qn *CommonQoSQueueNames) Name(q QoSQueue) string {
 	return qn.nameByGroup[q]
 }
 
@@ -278,14 +278,14 @@ func CommonQoSQueues(dev *DeviceParams, qos *QoSParams) (*CommonQoSQueueNames, e
 	if err != nil {
 		return nil, err
 	}
-	return &CommonQoSQueueNames{map[QosQueue]string{
-		NC1: cqq.NC1,
-		AF4: cqq.AF4,
-		AF3: cqq.AF3,
-		AF2: cqq.AF2,
-		AF1: cqq.AF1,
-		BE1: cqq.BE1,
-		BE0: cqq.BE0,
+	return &CommonQoSQueueNames{map[QoSQueue]string{
+		QoSNC1: cqq.NC1,
+		QoSAF4: cqq.AF4,
+		QoSAF3: cqq.AF3,
+		QoSAF2: cqq.AF2,
+		QoSAF1: cqq.AF1,
+		QoSBE1: cqq.BE1,
+		QoSBE0: cqq.BE0,
 	}}, nil
 }
 
