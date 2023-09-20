@@ -8,7 +8,7 @@ linecards and fabrics, and more.
 
 The computation of the names is delegated to a set of vendor-specific naming
 implementations. The functions provided by the library are self-contained and
-free of any I/O. The code does not _not_ communicate with network devices or
+free of any I/O. The code does _not_ communicate with network devices or
 external services. Rather, the library provides simple, pure-Go implementations
 of the vendor-specific entity naming conventions.
 
