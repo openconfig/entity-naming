@@ -212,35 +212,35 @@ func Fabric(dp *DeviceParams, index int) (string, error) {
 	return n.Fabric(uint(index))
 }
 
-// QoSQueue represents a common QoS queue.
-// See the common QoS queue definitions here:
+// QoSClass represents a common QoS class.
+// See the common QoS class definitions here:
 // https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
-type QoSQueue string
+type QoSClass string
 
 const (
-	// QoSNC1 is the NC1 QoS queue.
-	QoSNC1 = QoSQueue("NC1")
-	// QoSAF4 is the AF4 QoS queue.
-	QoSAF4 = QoSQueue("AF4")
-	// QoSAF3 is the AF3 QoS queue.
-	QoSAF3 = QoSQueue("AF3")
-	// QoSAF2 is the AF2 QoS queue.
-	QoSAF2 = QoSQueue("AF2")
-	// QoSAF1 is the AF1 QoS queue.
-	QoSAF1 = QoSQueue("AF1")
-	// QoSBE1 is the BE1 QoS queue.
-	QoSBE1 = QoSQueue("BE1")
-	// QoSBE0 is the BE0 QoS queue.
-	QoSBE0 = QoSQueue("BE0")
+	// QoSNC1 is the NC1 QoS class.
+	QoSNC1 = QoSClass("NC1")
+	// QoSAF4 is the AF4 QoS class.
+	QoSAF4 = QoSClass("AF4")
+	// QoSAF3 is the AF3 QoS class.
+	QoSAF3 = QoSClass("AF3")
+	// QoSAF2 is the AF2 QoS class.
+	QoSAF2 = QoSClass("AF2")
+	// QoSAF1 is the AF1 QoS class.
+	QoSAF1 = QoSClass("AF1")
+	// QoSBE1 is the BE1 QoS class.
+	QoSBE1 = QoSClass("BE1")
+	// QoSBE0 is the BE0 QoS class.
+	QoSBE0 = QoSClass("BE0")
 )
 
-// CommonQoSQueueNames are the names of the common QoS queues.
+// CommonQoSQueueNames are the queue names for the common QoS classes.
 type CommonQoSQueueNames struct {
-	nameByGroup map[QoSQueue]string
+	nameByGroup map[QoSClass]string
 }
 
-// Name returns the name of the specified QoS queue.
-func (qn *CommonQoSQueueNames) Name(q QoSQueue) string {
+// Name returns the name of the queue for the specified QoS class.
+func (qn *CommonQoSQueueNames) Name(q QoSClass) string {
 	return qn.nameByGroup[q]
 }
 
@@ -262,8 +262,8 @@ type QoSParams struct {
 	NumStrictPriority, NumWeightedRoundRobin int
 }
 
-// CommonQoSQueues returns the vendors-specific names of common QoS queues.
-// See the common QoS queue definitions here:
+// CommonQoSQueues returns the vendors-specific queues names for the common
+// QoS classes. See the common QoS class definitions here:
 // https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
 func CommonQoSQueues(dev *DeviceParams, qos *QoSParams) (*CommonQoSQueueNames, error) {
 	n, err := lookupNamer(dev)
@@ -278,7 +278,7 @@ func CommonQoSQueues(dev *DeviceParams, qos *QoSParams) (*CommonQoSQueueNames, e
 	if err != nil {
 		return nil, err
 	}
-	return &CommonQoSQueueNames{map[QoSQueue]string{
+	return &CommonQoSQueueNames{map[QoSClass]string{
 		QoSNC1: cqq.NC1,
 		QoSAF4: cqq.AF4,
 		QoSAF3: cqq.AF3,
