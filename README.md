@@ -47,12 +47,12 @@ Nokia "lag1."
 
 ## Common QoS Queues
 
-The library includes a `CommonQoSQueues` function that returns the
-vendor-specific names of common QoS queues. To learn details of the OpenConfig
-QoS model, see <https://openconfig.net/docs/models/qos/>. The common queues are
+The library includes a `CommonQoSQueues` function that returns vendor-specific
+queue names for the common QoS classes. To learn details of the OpenConfig QoS
+model, see <https://openconfig.net/docs/models/qos/>. The common QoS classes are
 defined in the following table, from highest to lowest priority:
 
-| Queue | QoS Level                     | Description                                                                                                                                        |
+| Class | QoS Level                     | Description                                                                                                                                        |
 | ----- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | NC1   | Network Control               | Traffic critical to the functionality of network devices and protocols, including routing protocol communication (OSPF, BGP, ISIS)                 |
 | AF4   | Assured Forwarding Priority 4 | Critical application and production traffic that requires low latency communication                                                                |
