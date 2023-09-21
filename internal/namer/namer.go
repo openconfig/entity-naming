@@ -56,9 +56,8 @@ type Namer interface {
 	// Return whether the device has a fixed form factor.
 	IsFixedFormFactor() bool
 
-	// CommonQoSQueues returns the names of the common QoS queues, or an error
-	// if no such names exist. See the common QoS queue definitions here:
-	// https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
+	// CommonQoSQueues returns the queue names for the common QoS classes, or an
+	// error if no such names exist.
 	CommonQoSQueues(qos *QoSParams) (*CommonQoSQueueNames, error)
 }
 
@@ -89,7 +88,7 @@ type QoSParams struct {
 	NumStrictPriority, NumWeightedRoundRobin uint
 }
 
-// CommonQoSQueueNames are the names of common QoS queues.
+// CommonQoSQueueNames are the queue names for the common QoS classes.
 type CommonQoSQueueNames struct {
 	NC1, AF4, AF3, AF2, AF1, BE1, BE0 string
 }
