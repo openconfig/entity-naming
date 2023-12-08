@@ -120,3 +120,13 @@ func (n *Namer) CommonQoSQueues(*namer.QoSParams) (*namer.CommonQoSQueueNames, e
 		BE0: "BE0",
 	}, nil
 }
+
+// ServicePorts is an implementation of namer.ServicePorts.
+func (n *Namer) ServicePorts() *namer.ServicePorts {
+	return &namer.ServicePorts{
+		GNMI:  9339,
+		GNOI:  9339,
+		GRIBI: 9340,
+		P4RT:  9559,
+	}
+}

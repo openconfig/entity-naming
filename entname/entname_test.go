@@ -411,6 +411,34 @@ func TestCommonQoSQueues(t *testing.T) {
 	})
 }
 
+func TestServicePorts(t *testing.T) {
+	var want = &namer.ServicePorts{
+		GNMI:  1,
+		GNOI:  5,
+		GRIBI: 2,
+		P4RT:  10,
+	}
+	setFakeNamer(&fakeNamer{ServicePortsFn: func() *namer.ServicePorts {
+		return want
+	}})
+	got, err := ServicePorts(devParams)
+	if err != nil {
+		t.Errorf("ServicePorts(%v) got error %v", devParams, err)
+	}
+	if got, want := got[GNMI], want.GNMI; got != int(want) {
+		t.Errorf("ServicePorts(%v) GNMI got %q, want %q", devParams, got, want)
+	}
+	if got, want := got[GNOI], want.GNOI; got != int(want) {
+		t.Errorf("ServicePorts(%v) GNOI got %q, want %q", devParams, got, want)
+	}
+	if got, want := got[GRIBI], want.GRIBI; got != int(want) {
+		t.Errorf("ServicePorts(%v) GRIBI got %q, want %q", devParams, got, want)
+	}
+	if got, want := got[P4RT], want.P4RT; got != int(want) {
+		t.Errorf("ServicePorts(%v) P4RT got %q, want %q", devParams, got, want)
+	}
+}
+
 func setFakeNamer(fn *fakeNamer) {
 	namerFactories[fakeVendor] = func(string) namer.Namer { return fn }
 }
@@ -423,6 +451,7 @@ type fakeNamer struct {
 	PortFn              func(*namer.PortParams) (string, error)
 	IsFixedFormFactorFn func() bool
 	CommonQoSQueuesFn   func(*namer.QoSParams) (*namer.CommonQoSQueueNames, error)
+	ServicePortsFn      func() *namer.ServicePorts
 }
 
 func (fn *fakeNamer) LoopbackInterface(index uint) (string, error) {
@@ -459,4 +488,8 @@ func (fn *fakeNamer) IsFixedFormFactor() bool {
 
 func (fn *fakeNamer) CommonQoSQueues(qp *namer.QoSParams) (*namer.CommonQoSQueueNames, error) {
 	return fn.CommonQoSQueuesFn(qp)
+}
+
+func (fn *fakeNamer) ServicePorts() *namer.ServicePorts {
+	return fn.ServicePortsFn()
 }

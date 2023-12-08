@@ -217,20 +217,14 @@ func Fabric(dp *DeviceParams, index int) (string, error) {
 // https://github.com/openconfig/entity-naming/blob/main/README.md#common-qos-queues
 type QoSClass string
 
+// QoS class enum constants.
 const (
-	// QoSNC1 is the NC1 QoS class.
 	QoSNC1 = QoSClass("NC1")
-	// QoSAF4 is the AF4 QoS class.
 	QoSAF4 = QoSClass("AF4")
-	// QoSAF3 is the AF3 QoS class.
 	QoSAF3 = QoSClass("AF3")
-	// QoSAF2 is the AF2 QoS class.
 	QoSAF2 = QoSClass("AF2")
-	// QoSAF1 is the AF1 QoS class.
 	QoSAF1 = QoSClass("AF1")
-	// QoSBE1 is the BE1 QoS class.
 	QoSBE1 = QoSClass("BE1")
-	// QoSBE0 is the BE0 QoS class.
 	QoSBE0 = QoSClass("BE0")
 )
 
@@ -343,4 +337,30 @@ func lookupNamer(dp *DeviceParams) (namer.Namer, error) {
 		return nil, fmt.Errorf("no Namer for vendor %v", dp.Vendor)
 	}
 	return nf(dp.HardwareModel), nil
+}
+
+// Service is the name of an OpenConfig service.
+type Service string
+
+// Service enum constants.
+const (
+	GNMI  = Service("gnmi")
+	GNOI  = Service("gnoi")
+	GRIBI = Service("gribi")
+	P4RT  = Service("p4rt")
+)
+
+// ServicePorts returns the vendors-specific service port numbers.
+func ServicePorts(dp *DeviceParams) (map[Service]int, error) {
+	n, err := lookupNamer(dp)
+	if err != nil {
+		return nil, err
+	}
+	sps := n.ServicePorts()
+	return map[Service]int{
+		GNMI:  int(sps.GNMI),
+		GNOI:  int(sps.GNOI),
+		GRIBI: int(sps.GRIBI),
+		P4RT:  int(sps.P4RT),
+	}, nil
 }

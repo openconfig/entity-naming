@@ -59,6 +59,9 @@ type Namer interface {
 	// CommonQoSQueues returns the queue names for the common QoS classes, or an
 	// error if no such names exist.
 	CommonQoSQueues(qos *QoSParams) (*CommonQoSQueueNames, error)
+
+	//
+	ServicePorts() *ServicePorts
 }
 
 // PortParams are parameters of a network port.
@@ -95,4 +98,13 @@ type CommonQoSQueueNames struct {
 
 func (qn *CommonQoSQueueNames) String() string {
 	return fmt.Sprintf("%+v", *qn)
+}
+
+// ServicePorts are the service port numbers.
+type ServicePorts struct {
+	GNMI, GNOI, GRIBI, P4RT uint16
+}
+
+func (sp *ServicePorts) String() string {
+	return fmt.Sprintf("%+v", *sp)
 }
