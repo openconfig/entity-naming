@@ -28,7 +28,7 @@ parameters:
 
 ```go
 dev := &entname.DeviceParams{
-    Vendor: naming.JUNIPER,
+    Vendor: entname.VendorJuniper,
     HardwareModel: "PTX10008",
 }
 ```
