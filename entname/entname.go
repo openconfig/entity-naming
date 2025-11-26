@@ -48,6 +48,8 @@ var namerFactories = map[Vendor]func(string) namer.Namer{
 	VendorCiena:   func(hwm string) namer.Namer { return &ciena.Namer{HardwareModel: hwm} },
 }
 
+const nilString = "nil"
+
 // DeviceParams are parameters of a network device.
 type DeviceParams struct {
 	Vendor        Vendor
@@ -56,7 +58,7 @@ type DeviceParams struct {
 
 func (dp *DeviceParams) String() string {
 	if dp == nil {
-		return "nil"
+		return nilString
 	}
 	return fmt.Sprintf("%+v", *dp)
 }
@@ -84,7 +86,7 @@ type PortParams struct {
 
 func (pp *PortParams) String() string {
 	if pp == nil {
-		return "nil"
+		return nilString
 	}
 	return fmt.Sprintf("%+v", *pp)
 }
@@ -249,7 +251,7 @@ func (qn *CommonQoSQueueNames) Name(q QoSClass) string {
 
 func (qn *CommonQoSQueueNames) String() string {
 	if qn == nil {
-		return "nil"
+		return nilString
 	}
 	var sb strings.Builder
 	sb.WriteString("{\n")
@@ -312,7 +314,7 @@ type CommonTrafficQueueNames struct {
 
 func (qn *CommonTrafficQueueNames) String() string {
 	if qn == nil {
-		return "nil"
+		return nilString
 	}
 	return fmt.Sprintf("%+v", *qn)
 }
