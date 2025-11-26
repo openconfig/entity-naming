@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	"github.com/openconfig/entity-naming/internal/arista"
+	"github.com/openconfig/entity-naming/internal/ciena"
 	"github.com/openconfig/entity-naming/internal/cisco"
 	"github.com/openconfig/entity-naming/internal/juniper"
 	"github.com/openconfig/entity-naming/internal/namer"
@@ -36,6 +37,7 @@ const (
 	VendorCisco   = Vendor("Cisco")
 	VendorJuniper = Vendor("Juniper")
 	VendorNokia   = Vendor("Nokia")
+	VendorCiena   = Vendor("Ciena")
 )
 
 var namerFactories = map[Vendor]func(string) namer.Namer{
@@ -43,6 +45,7 @@ var namerFactories = map[Vendor]func(string) namer.Namer{
 	VendorCisco:   func(hwm string) namer.Namer { return &cisco.Namer{HardwareModel: hwm} },
 	VendorJuniper: func(hwm string) namer.Namer { return &juniper.Namer{HardwareModel: hwm} },
 	VendorNokia:   func(hwm string) namer.Namer { return &nokia.Namer{HardwareModel: hwm} },
+	VendorCiena:   func(hwm string) namer.Namer { return &ciena.Namer{HardwareModel: hwm} },
 }
 
 // DeviceParams are parameters of a network device.
