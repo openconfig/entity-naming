@@ -69,7 +69,7 @@ func TestAggregateInterface(t *testing.T) {
 	}, {
 		desc:  "max",
 		index: 255,
-		want:  "agg255",
+		want:  "agg256",
 	}}
 	for _, test := range tests {
 		t.Run(test.desc, func(t *testing.T) {
@@ -86,7 +86,7 @@ func TestAggregateInterface(t *testing.T) {
 	t.Run("over max", func(t *testing.T) {
 		_, err := cn.AggregateInterface(256)
 		if wantErr := "exceed"; err == nil || !strings.Contains(err.Error(), wantErr) {
-			t.Fatalf("AggregateInterface(65535) got error %v, want substring %q", err, wantErr)
+			t.Fatalf("AggregateInterface(256) got error %v, want substring %q", err, wantErr)
 		}
 	})
 }
@@ -103,7 +103,7 @@ func TestAggregateMemberInterface(t *testing.T) {
 	}, {
 		desc:  "max",
 		index: 255,
-		want:  "agg255",
+		want:  "agg256",
 	}}
 	for _, test := range tests {
 		t.Run(test.desc, func(t *testing.T) {
