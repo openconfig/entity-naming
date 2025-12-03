@@ -32,7 +32,7 @@ type Namer struct {
 // LoopbackInterface is an implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index uint) (string, error) {
 	if index != 0 {
-		//nolint:staticcheck ST1005 string begins with proper noun
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Juniper only supports loopback interface zero")
 	}
 	return "lo0", nil
