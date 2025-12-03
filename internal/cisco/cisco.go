@@ -39,6 +39,7 @@ func (n *Namer) LoopbackInterface(index uint) (string, error) {
 func (n *Namer) AggregateInterface(index uint) (string, error) {
 	const maxIndex = 65534
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Cisco aggregate index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("Bundle-Ether%d", index+1), nil
@@ -53,6 +54,7 @@ func (n *Namer) AggregateMemberInterface(index uint) (string, error) {
 func (n *Namer) Linecard(index uint) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Cisco linecard index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("0/%d/CPU0", index), nil
@@ -62,6 +64,7 @@ func (n *Namer) Linecard(index uint) (string, error) {
 func (n *Namer) ControllerCard(index uint) (string, error) {
 	const maxIndex = 1
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Cisco controller card index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("0/RP%d/CPU0", index), nil
@@ -71,6 +74,7 @@ func (n *Namer) ControllerCard(index uint) (string, error) {
 func (n *Namer) Fabric(index uint) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Cisco fabric index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("0/FC%d", index), nil
