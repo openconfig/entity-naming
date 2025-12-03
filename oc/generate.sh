@@ -30,4 +30,7 @@ generator \
   public/release/models/optical-transport/openconfig-terminal-device.yang \
   public/release/models/optical-transport/openconfig-transport-types.yang
 
+goimports -w oc.go
+gofmt -w -s oc.go
+
 rm -rf public
