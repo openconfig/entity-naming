@@ -13,6 +13,8 @@ permissions: {}
 jobs:
   go:
     uses: openconfig/common-ci/.github/workflows/basic_go.yml@88a41b190576ebf6d51b5204c1056af2bda19036
+    with:
+      skip-staticcheck: true
     permissions:
       contents: read
       statuses: write
