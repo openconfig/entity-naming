@@ -1,52 +1,15 @@
-# Copyright 2023 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
----
 name: Lint Code Base
 
 on:
   push:
     branches: [main]
-    # Remove the line above to run when pushing to master
   pull_request:
-    branches: [main]
 
 permissions: {}
 
 jobs:
-  build:
-    name: Lint Code Base
-    runs-on: ubuntu-latest
-
+  lint:
+    uses: openconfig/common-ci/.github/workflows/linter.yml@88a41b190576ebf6d51b5204c1056af2bda19036
     permissions:
       contents: read
       packages: read
-      # To report Github Actions status checks
-      statuses: write
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Lint Code Base
-        uses: github/super-linter@ffde3b2b33b745cb612d787f669ef9442b1339a6 # v8
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_HTML: false
-          VALIDATE_JSCPD: false
-          VALIDATE_GO: false
-          IGNORE_GENERATED_FILES: true
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
