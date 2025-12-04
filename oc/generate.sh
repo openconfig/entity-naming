@@ -21,13 +21,16 @@ git clone https://github.com/openconfig/public.git
 go install github.com/openconfig/ygot/generator@latest
 
 generator \
-  -output_file=oc.go \
-  -exclude_modules=ietf-interfaces \
-  -compress_paths=true \
-  -trim_enum_openconfig_prefix \
-  -package_name=oc \
-  -path=public \
-  public/release/models/optical-transport/openconfig-terminal-device.yang \
-  public/release/models/optical-transport/openconfig-transport-types.yang
+	-output_file=oc.go \
+	-exclude_modules=ietf-interfaces \
+	-compress_paths=true \
+	-trim_enum_openconfig_prefix \
+	-package_name=oc \
+	-path=public \
+	public/release/models/optical-transport/openconfig-terminal-device.yang \
+	public/release/models/optical-transport/openconfig-transport-types.yang
+
+goimports -w oc.go
+gofmt -w -s oc.go
 
 rm -rf public

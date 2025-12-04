@@ -32,6 +32,7 @@ type Namer struct {
 // LoopbackInterface is an implementation of namer.LoopbackInterface.
 func (n *Namer) LoopbackInterface(index uint) (string, error) {
 	if index != 0 {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Juniper only supports loopback interface zero")
 	}
 	return "lo0", nil
@@ -41,6 +42,7 @@ func (n *Namer) LoopbackInterface(index uint) (string, error) {
 func (n *Namer) AggregateInterface(index uint) (string, error) {
 	const maxIndex = 1151
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Juniper aggregate index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("ae%d", index), nil
@@ -59,6 +61,7 @@ func (n *Namer) AggregateMemberInterface(index uint) (string, error) {
 func (n *Namer) Linecard(index uint) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Juniper linecard index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("FPC%d", index), nil
@@ -68,6 +71,7 @@ func (n *Namer) Linecard(index uint) (string, error) {
 func (n *Namer) ControllerCard(index uint) (string, error) {
 	const maxIndex = 1
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Juniper controller card index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("RE%d", index), nil
@@ -77,6 +81,7 @@ func (n *Namer) ControllerCard(index uint) (string, error) {
 func (n *Namer) Fabric(index uint) (string, error) {
 	const maxIndex = 5
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Juniper fabric index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("SIB%d", index), nil
@@ -85,6 +90,7 @@ func (n *Namer) Fabric(index uint) (string, error) {
 // Port is an implementation of namer.Port.
 func (n *Namer) Port(pp *namer.PortParams) (string, error) {
 	if !pp.Channelizable {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Juniper does not support unchannelizable ports")
 	}
 

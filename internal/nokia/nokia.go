@@ -33,6 +33,7 @@ type Namer struct {
 func (n *Namer) LoopbackInterface(index uint) (string, error) {
 	const maxIndex = 255
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Nokia loopback index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("lo%d", index), nil
@@ -42,6 +43,7 @@ func (n *Namer) LoopbackInterface(index uint) (string, error) {
 func (n *Namer) AggregateInterface(index uint) (string, error) {
 	const maxIndex = 127
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Nokia aggregate index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("lag%d", index+1), nil
@@ -60,6 +62,7 @@ func (n *Namer) AggregateMemberInterface(index uint) (string, error) {
 func (n *Namer) Linecard(index uint) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Nokia linecard index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("Linecard%d", index+1), nil
@@ -69,6 +72,7 @@ func (n *Namer) Linecard(index uint) (string, error) {
 func (n *Namer) ControllerCard(index uint) (string, error) {
 	const maxIndex = 1
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Nokia controller card index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("Supervisor%d", index+1), nil
@@ -78,6 +82,7 @@ func (n *Namer) ControllerCard(index uint) (string, error) {
 func (n *Namer) Fabric(index uint) (string, error) {
 	const maxIndex = 7
 	if index > maxIndex {
+		//nolint:staticcheck // ST1005 string begins with proper noun
 		return "", fmt.Errorf("Nokia fabric index cannot exceed %d, got %d", maxIndex, index)
 	}
 	return fmt.Sprintf("Fabric%d", index+1), nil

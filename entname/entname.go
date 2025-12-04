@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	"github.com/openconfig/entity-naming/internal/arista"
+	"github.com/openconfig/entity-naming/internal/ciena"
 	"github.com/openconfig/entity-naming/internal/cisco"
 	"github.com/openconfig/entity-naming/internal/juniper"
 	"github.com/openconfig/entity-naming/internal/namer"
@@ -36,6 +37,7 @@ const (
 	VendorCisco   = Vendor("Cisco")
 	VendorJuniper = Vendor("Juniper")
 	VendorNokia   = Vendor("Nokia")
+	VendorCiena   = Vendor("Ciena")
 )
 
 var namerFactories = map[Vendor]func(string) namer.Namer{
@@ -43,7 +45,10 @@ var namerFactories = map[Vendor]func(string) namer.Namer{
 	VendorCisco:   func(hwm string) namer.Namer { return &cisco.Namer{HardwareModel: hwm} },
 	VendorJuniper: func(hwm string) namer.Namer { return &juniper.Namer{HardwareModel: hwm} },
 	VendorNokia:   func(hwm string) namer.Namer { return &nokia.Namer{HardwareModel: hwm} },
+	VendorCiena:   func(hwm string) namer.Namer { return &ciena.Namer{HardwareModel: hwm} },
 }
+
+const nilString = "nil"
 
 // DeviceParams are parameters of a network device.
 type DeviceParams struct {
@@ -53,7 +58,7 @@ type DeviceParams struct {
 
 func (dp *DeviceParams) String() string {
 	if dp == nil {
-		return "nil"
+		return nilString
 	}
 	return fmt.Sprintf("%+v", *dp)
 }
@@ -81,7 +86,7 @@ type PortParams struct {
 
 func (pp *PortParams) String() string {
 	if pp == nil {
-		return "nil"
+		return nilString
 	}
 	return fmt.Sprintf("%+v", *pp)
 }
@@ -246,7 +251,7 @@ func (qn *CommonQoSQueueNames) Name(q QoSClass) string {
 
 func (qn *CommonQoSQueueNames) String() string {
 	if qn == nil {
-		return "nil"
+		return nilString
 	}
 	var sb strings.Builder
 	sb.WriteString("{\n")
@@ -309,7 +314,7 @@ type CommonTrafficQueueNames struct {
 
 func (qn *CommonTrafficQueueNames) String() string {
 	if qn == nil {
-		return "nil"
+		return nilString
 	}
 	return fmt.Sprintf("%+v", *qn)
 }
