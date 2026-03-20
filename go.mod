@@ -2,7 +2,7 @@ module github.com/openconfig/entity-naming
 
 go 1.24.0
 
-toolchain go1.25.5
+toolchain go1.26.1
 
 require (
 	github.com/openconfig/goyang v1.6.3
