@@ -1,3 +1,4 @@
+---
 name: Lint Code Base
 
 on:
@@ -9,7 +10,7 @@ permissions: {}
 
 jobs:
   lint:
-    uses: openconfig/common-ci/.github/workflows/linter.yml@88a41b190576ebf6d51b5204c1056af2bda19036
+    uses: openconfig/common-ci/.github/workflows/linter.yml@9bd215b60afdefd1633ca8d20101cd03534e19b1
     permissions:
       contents: read
       packages: read
