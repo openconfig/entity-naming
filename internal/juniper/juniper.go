@@ -119,12 +119,12 @@ func (n *Namer) IsFixedFormFactor() bool {
 // CommonQoSQueues is an implementation of namer.CommonQoSQueues.
 func (n *Namer) CommonQoSQueues(*namer.QoSParams) (*namer.CommonQoSQueueNames, error) {
 	return &namer.CommonQoSQueueNames{
-		NC1: "7",
-		AF4: "6",
-		AF3: "4",
-		AF2: "3",
-		AF1: "2",
-		BE1: "0",
-		BE0: "1",
+		NC1: "NC1",
+		AF4: "AF4",
+		AF3: "AF3",
+		AF2: "AF2",
+		AF1: "AF1",
+		BE1: "BE1",
+		BE0: "BE0",
 	}, nil
 }
